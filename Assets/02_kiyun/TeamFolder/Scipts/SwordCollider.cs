@@ -50,10 +50,18 @@ public class SwordCollider : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 실제로 누가 닿았는지 확인
-        Debug.Log($"닿은 대상: {other.gameObject.name}, 대상의 태그: {other.gameObject.tag}");
+        Debug.Log($"닿은 대상: {other.gameObject.name}, 대상의 태그: {other.gameObject.tag}"); 
 
         if (other.CompareTag("Player")) return;
         if (other.CompareTag("Ground")) return;
+
+        //int playerDamage = Player.Instance.Att;
+
+        // 2. 몬스터(EnemyHealth) 컴포넌트 찾기
+        //EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+
+        //if (enemy != null) { enemy.TakeDamage(playerDamage); }
+
         GameObject hitEffect = EffectManager.Instance.GetEffect("Hit");
         if (hitEffect != null)
         {
@@ -71,6 +79,7 @@ public class SwordCollider : MonoBehaviour
                 ps.Play(); // 처음부터 다시 재생
             }
         }
+
         Debug.Log($"공격 적중: {other.gameObject.name}");
     }
 

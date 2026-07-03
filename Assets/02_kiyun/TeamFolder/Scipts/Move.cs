@@ -5,12 +5,13 @@ using UnityEngine;
 public class Move : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float walkSpeed = 2f;
+    public float walkSpeed = 4f;
     public float runSpeed = 7f;
     public float jumpForce = 5f;
 
     [Header("Attack Settings")]
     public float comboDelay = 0.3f;
+    private bool isDownAttack = false;
 
     public Animator anim;
     private Rigidbody rb;
@@ -43,16 +44,18 @@ public class Move : MonoBehaviour
         if (isDashing) return;
 
         // 2. 이동 로직 (Rigidbody 사용)
-        if(!isAttacking)
+        if(!isAttacking && !Player.Instance.Die)
             HandleMovement();
 
         // 3. 레이캐스트 및 점프/공격 입력
-        isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.2f);
-        if (isGrounded) anim.SetBool("Jump", false);
+        int groundLayer = LayerMask.GetMask("Ground");
+        isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
+        if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && canJump)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
             anim.SetBool("Jump", true);
             StartCoroutine(JumpCooldown());
         }
@@ -60,7 +63,7 @@ public class Move : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z))
         {
             SwordCollider.Instance.EnableAttack(1f);
-            if (!isAttacking)
+            if (isGrounded && !isAttacking)
             {
                 StartCoroutine(AttackRoutine());
                 anim.SetTrigger("Attack");
@@ -71,6 +74,8 @@ public class Move : MonoBehaviour
                 nextInputReady = true;
                 anim.SetTrigger("Attack");
             }
+            if (!isGrounded)
+                anim.SetBool("Down Attack",true);
         }
 
         if (Input.GetKeyDown(KeyCode.X) && !isDashing && canDash)
@@ -80,9 +85,10 @@ public class Move : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            SwordCollider.Instance.EnableAttack(6f);
+            StartCoroutine(SpecialAttackRoutine(7f));
             anim.SetTrigger("P");
         }
+
     }
 
     void HandleMovement()
@@ -113,35 +119,35 @@ public class Move : MonoBehaviour
         isDashing = true;
         canDash = false;
 
-        // 1. 대쉬 중 물리 간섭 최소화
-        // 중력을 끄고, 회전을 고정하여 이동 경로가 틀어지는 것을 방지합니다.
-        bool originalUseGravity = rb.useGravity;
-        RigidbodyConstraints originalConstraints = rb.constraints;
+        // 1. 대쉬 시작: 플레이어(몸체)와 몬스터 레이어 간의 충돌을 무시
+        // 주의: 공격 판정(Sword)은 이 레이어와 다르게 설정해야 타격이 가능합니다.
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int monsterLayer = LayerMask.NameToLayer("Monster");
+        Physics.IgnoreLayerCollision(playerLayer, monsterLayer, true);
 
+        bool originalGravity = rb.useGravity;
         rb.useGravity = false;
-        rb.constraints = RigidbodyConstraints.FreezeRotation; // 회전만 고정
 
         anim.SetTrigger("Dash");
 
-        Vector3 startPos = transform.position;
-        Vector3 targetPos = startPos + (transform.forward * dashSpeed);
+        Vector3 dashDirection = transform.forward;
+        float currentDashSpeed = dashSpeed / dashTime;
 
         float elapsed = 0f;
-        //대쉬해서 목표 지점까지 걸리는 시간
         while (elapsed < dashTime)
         {
-            // Lerp로 위치를 직접 지정
-            transform.position = Vector3.Lerp(startPos, targetPos, elapsed / dashTime);
+            // 2. 물리 이동 (Ground 레이어와는 충돌이 켜져 있으므로 벽에서 멈춤)
+            Vector3 nextPos = rb.position + (dashDirection * currentDashSpeed * Time.deltaTime);
+            rb.MovePosition(nextPos);
+
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        transform.position = targetPos;
+        // 3. 대쉬 종료: 충돌 무시 설정 복구
+        Physics.IgnoreLayerCollision(playerLayer, monsterLayer, false);
 
-        // 2. 물리 설정 복구
-        rb.useGravity = originalUseGravity;
-        rb.constraints = originalConstraints;
-
+        rb.useGravity = originalGravity;
         isDashing = false;
 
         yield return new WaitForSeconds(dashCooldown);
@@ -178,6 +184,22 @@ public class Move : MonoBehaviour
         canJump = true;
     }
 
+    IEnumerator SpecialAttackRoutine(float duration)
+    {
+        isAttacking = true; // 공격 상태 시작
+        Player.Instance.SetInvincible(true);
+        // 공격 설정 및 애니메이션 실행
+        SwordCollider.Instance.EnableAttack(6f);
+        anim.SetTrigger("P");
+
+        // 6초 동안 대기
+        yield return new WaitForSeconds(duration);
+
+        isAttacking = false; // 공격 상태 종료
+        Player.Instance.SetInvincible(false);
+        Debug.Log("특수 공격 종료");
+    }
+
     void ResetCombo()
     {
         Debug.Log("콤보 리셋");
@@ -188,12 +210,10 @@ public class Move : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        // 태그 대신 레이어 확인 (더 안전함)
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            if (!isGrounded)
-            {
-                isGrounded = true;
-            }
+            isGrounded = true;
         }
     }
 
