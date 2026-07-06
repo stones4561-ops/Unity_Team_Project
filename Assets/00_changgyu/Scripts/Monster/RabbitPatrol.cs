@@ -32,9 +32,8 @@ public class RabbitPatrol : MonoBehaviour
 
     private void Start()
     {
-        ChooseNextAction();
         moveSpeed = mBase.MonsterSpeed;
-
+        ChooseNextAction();
     }
 
     private void Update()
@@ -46,11 +45,11 @@ public class RabbitPatrol : MonoBehaviour
             ChooseNextAction();
         }
 
-        Vector3 frontVec = new Vector3(transform.position.x + moveDirection * 0.2f, transform.position.y+0.1f, transform.position.z);
+        Vector3 frontVec = new Vector3(transform.position.x + moveDirection * 0.2f, transform.position.y+0.2f, transform.position.z);
 
 
         bool isGrounded = Physics.Raycast(frontVec, Vector3.down, out RaycastHit hit, transform.localScale.y / 2 + 0.2f, LayerMask.GetMask("Ground"));
-        Debug.Log(isGrounded);
+
 
         if (!isGrounded && moveDirection != 0)
         {
@@ -95,7 +94,7 @@ public class RabbitPatrol : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Vector3 frontVec = new Vector3(transform.position.x + moveDirection * 0.2f, transform.position.y+0.1f, transform.position.z);
+        Vector3 frontVec = new Vector3(transform.position.x + moveDirection * 0.2f, transform.position.y+0.2f, transform.position.z);
         Gizmos.DrawRay(frontVec, Vector3.down * (transform.localScale.y / 2 + 0.2f));
     }
 }

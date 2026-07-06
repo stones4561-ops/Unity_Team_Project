@@ -15,4 +15,4 @@ MonoBehaviour:
   monsterName: "\uB291\uB300"
   monsterHP: 10
   monsterAtk: 3
-  monsterSpeed: 1
+  monsterSpeed: 0.5
