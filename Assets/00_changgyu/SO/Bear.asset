@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Bear
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSO
   monsterName: "\uACF0"
-  monsterHP: 100
+  monsterHP: 10
   monsterAtk: 10
   monsterSpeed: 1

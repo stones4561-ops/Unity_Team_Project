@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MonsterBase : MonoBehaviour,IDamageable
 {
@@ -8,10 +9,14 @@ public class MonsterBase : MonoBehaviour,IDamageable
     [SerializeField]
     private Animator anim;
 
+    [SerializeField]
+    private Image hpFillBar;
+
 
     private string monsterName;
     
     private int monsterHP;
+    private int maxHP;
     private int monsterAtk;
     public int MonsterAtk
     { get { return monsterAtk;} }
@@ -32,7 +37,8 @@ public class MonsterBase : MonoBehaviour,IDamageable
     private void Awake()
     {
         monsterName = myData.monsterName;
-        monsterHP = myData.monsterHP;
+        maxHP = myData.monsterHP;
+        monsterHP=maxHP;
         monsterAtk = myData.monsterAtk;
         monsterSpeed = myData.monsterSpeed;
         rb = GetComponent<Rigidbody>();
@@ -43,6 +49,11 @@ public class MonsterBase : MonoBehaviour,IDamageable
         if (IsDead) return;
 
         monsterHP -= _damage;
+
+        if(hpFillBar != null)
+        {
+            hpFillBar.fillAmount = (float)monsterHP/maxHP;
+        }
 
         if (monsterHP <= 0)
         {
@@ -60,8 +71,9 @@ public class MonsterBase : MonoBehaviour,IDamageable
 
     private IEnumerator Dead()
     {
-        anim.SetBool("isDead", true);
-        yield return new WaitForSeconds(3f);
+        rb.linearVelocity = Vector3.zero;
+        anim.SetTrigger("isDead");
+        yield return new WaitForSeconds(4f);
         gameObject.SetActive(false);
     }
 
