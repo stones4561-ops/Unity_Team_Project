@@ -8,6 +8,10 @@ public class TempPlayer : MonoBehaviour,IDamageable
     private Rigidbody rb;
     private List<IDamageable> enemies = new List<IDamageable>();
     
+    public PlayerInventory inventory;
+
+    
+    
 
     public void TakeDamage(int _damage)
     {
@@ -30,7 +34,21 @@ public class TempPlayer : MonoBehaviour,IDamageable
         {
             Attack();
         }
+
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            TurnInventory();
+        }
     }
+
+    private void TurnInventory()
+    {
+        if(inventory.gameObject.activeSelf)
+            inventory.gameObject.SetActive(false);
+        else
+            inventory.gameObject.SetActive(true);
+    }
+    
 
     private void Attack()
     {
@@ -45,6 +63,16 @@ public class TempPlayer : MonoBehaviour,IDamageable
         if(damageable != null&&!enemies.Contains(damageable))
         {
             enemies.Add(damageable);
+        }
+
+        if (other.CompareTag("DropItem"))
+        {
+            DropItem item = other.GetComponent<DropItem>();
+            if (item != null && item.Collectable && !item.IsFollowing)
+            {
+                if (inventory.playerInven.CanAddItem(item.ItemData))
+                    item.StartFollowing(transform);
+            }
         }
     }
 

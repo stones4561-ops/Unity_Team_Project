@@ -25,20 +25,29 @@ public class Inventory : MonoBehaviour
     /// 인벤토리에 아이템을 하나만 추가하는 메서드
     /// </summary>
     /// <param name="_item"></param>
-    public void AddItem(Item _item)
+    public bool AddItem(ItemSO _item)
     {
         //먼저 같은 아이템이 있는지 찾고 있으면 수량 증가
-        int index = FindFirstSameItem(_item.Data);
+        int index = FindFirstSameItem(_item);
         if (index != -1)
+        {
             inventory[index].ItemUp(1);
+            return true;
+        }
         else
         {
             //같은 아이템이 없다면 빈 슬롯이 있는지 찾아봄, 없으면 꽉 찼다는 뜻
             index = FindFirstEmptySlot();
             if (index != -1)
-                inventory[index].SetItem(_item.Data);
+            {
+                inventory[index].SetItem(_item);
+                return true;
+            }
             else
+            {
                 Debug.Log("인벤토리가 꽉 찼습니다!");
+                return false;
+            }
         }
 
     }
@@ -293,29 +302,38 @@ public class Inventory : MonoBehaviour
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void testAdd()
+    public bool CanAddItem(ItemSO _itemData)
     {
-        AddItem(testitem);
+        int index = FindFirstSameItem(_itemData);
+        if (index != -1) return true;
+
+        index = FindFirstEmptySlot();
+        if (index != -1) return true;
+
+        return false;
     }
 
-    public void testAdd2()
-    {
-        AddItem(testitem2);
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+    //public void testAdd()
+    //{
+    //    AddItem(testitem);
+    //}
+
+    //public void testAdd2()
+    //{
+    //    AddItem(testitem2);
+    //}
 
     public void testRemove1()
     {

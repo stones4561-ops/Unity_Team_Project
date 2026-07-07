@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4949302855253372}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: spine2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4209681510454856}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4791395021911050}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: shoulder_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4201844087143292}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: ear_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4091186393565068}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: hip_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4622873937476790}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: leg_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4711454262369226}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: arm_handle_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,7 +231,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4263307619732160}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: ear_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4136954610420946}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4943476403930446}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: spine3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -328,7 +328,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4706136316400948}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: spine1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,7 +362,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4607569843172888}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: hand_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,7 +393,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4135173078563202}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: arm_handle_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,7 +425,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4419247260688738}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: leg_handle_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -457,7 +457,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4545584512926882}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: foot_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -489,7 +489,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4709169015965626}
   - component: {fileID: 137485845215741518}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Rabbit_Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -604,7 +604,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4631660301490806}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: hand_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -635,7 +635,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4750612176443984}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: hip_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -667,7 +667,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4097710838015792}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: arm_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -698,7 +698,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4558130067834936}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: arm_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -734,7 +734,7 @@ GameObject:
   - component: {fileID: -7336516679211049655}
   - component: {fileID: -2755530483864545614}
   - component: {fileID: 7423213878933639644}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Rabbit 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -845,6 +845,7 @@ MonoBehaviour:
   myData: {fileID: 11400000, guid: 696df50b1e2ac0548a22d345fb0960a9, type: 2}
   anim: {fileID: 95674028643950644}
   hpFillBar: {fileID: 2463757703997138127}
+  dropTableSO: {fileID: 11400000, guid: 31dae3b61783c8446918b8a2d6c901f3, type: 2}
 --- !u!114 &7423213878933639644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -868,7 +869,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4350934149503794}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: shoulder_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -900,7 +901,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4899618716157798}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -933,7 +934,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4452568275180102}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: leg_handle_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -965,7 +966,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4350321825547840}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: master
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1001,7 +1002,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4322022157540082}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: leg_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1032,7 +1033,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4375748093597188}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: foot_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1064,7 +1065,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4280294624668182}
   - component: {fileID: 137231876560530974}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Rabbit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1258,9 +1259,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2708175353279976650, guid: d6d73455672a9f4469445f08a62e6ae1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923747505435159474, guid: d6d73455672a9f4469445f08a62e6ae1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5770890599142015911, guid: d6d73455672a9f4469445f08a62e6ae1, type: 3}
       propertyPath: m_Name
       value: HPBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 5770890599142015911, guid: d6d73455672a9f4469445f08a62e6ae1, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

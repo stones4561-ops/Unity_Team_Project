@@ -23,6 +23,15 @@ public class PlayerInventory : MonoBehaviour
 
         playerInven.InitInventory();
         playerInvenUI.InitInventoryUI();
+
+        gameObject.SetActive(false);
+    }
+
+    public bool GetItem(ItemSO _itemData)
+    {
+        bool result = playerInven.AddItem(_itemData);
+        playerInvenUI.Redraw();
+        return result;
     }
 
 }

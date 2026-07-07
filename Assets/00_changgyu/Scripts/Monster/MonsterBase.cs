@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,10 @@ public class MonsterBase : MonoBehaviour,IDamageable
     [SerializeField]
     private Image hpFillBar;
 
+    [SerializeField]
+    private DropTableSO dropTableSO;
+
+    private List<bool> dropBool = new List<bool>();
 
     private string monsterName;
     
@@ -44,6 +49,24 @@ public class MonsterBase : MonoBehaviour,IDamageable
         rb = GetComponent<Rigidbody>();
     }
 
+    //리스폰시 상태 초기화+드롭아이템 확률을 여기서 재설정
+    private void OnEnable()
+    {
+        
+        monsterHP = maxHP;
+        hpFillBar.fillAmount = 1;
+        IsDead = false;
+        dropBool.Clear();
+        for(int i = 0; i < dropTableSO.dropChance.Length; i++)
+        {
+            float chance = Random.Range(0, 100f);
+            if (chance <= dropTableSO.dropChance[i])
+                dropBool.Add(true);
+            else
+                dropBool.Add(false);
+        }
+    }
+
     public void TakeDamage(int _damage)
     {
         if (IsDead) return;
@@ -74,6 +97,14 @@ public class MonsterBase : MonoBehaviour,IDamageable
         rb.linearVelocity = Vector3.zero;
         anim.SetTrigger("isDead");
         yield return new WaitForSeconds(4f);
+        for(int i=0;i<dropBool.Count;i++)
+        {
+            if(dropBool[i])
+            {
+                DropItemManager.Instance.SpawnItem(dropTableSO.dropItems[i],transform.position);
+            }
+
+        }
         gameObject.SetActive(false);
     }
 
