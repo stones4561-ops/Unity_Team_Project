@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSO
   monsterName: "\uACF0"
   monsterHP: 10
-  monsterAtk: 10
+  monsterAtk: 0
   monsterSpeed: 1

@@ -1,9 +1,13 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Move : MonoBehaviour
 {
+    private static Move instance;
+    public static Move Instance {  get { return instance; } }
+
     [Header("Movement Settings")]
     public float walkSpeed = 4f;
     public float runSpeed = 7f;
@@ -17,6 +21,7 @@ public class Move : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
     private bool canJump = true;
+    private bool lastGrounded;
 
     private bool isAttacking = false;
     private bool nextInputReady = false;
@@ -28,9 +33,16 @@ public class Move : MonoBehaviour
     public float dashCooldown = 3f;
     private bool isDashing = false;
     private bool canDash = true;
+    [SerializeField]
+    private Image DashSkill;
+
 
     private void Awake()
     {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(this.gameObject);
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         
@@ -41,7 +53,7 @@ public class Move : MonoBehaviour
     void Update()
     {
         // 1. 대쉬 중엔 이동, 점프, 공격 로직을 아예 실행하지 않음
-        if (isDashing) return;
+        if (isDashing || Player.Instance.IsUsingSkill) return;
 
         // 2. 이동 로직 (Rigidbody 사용)
         if(!isAttacking && !Player.Instance.Die)
@@ -50,7 +62,7 @@ public class Move : MonoBehaviour
         // 3. 레이캐스트 및 점프/공격 입력
         int groundLayer = LayerMask.GetMask("Ground");
         isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
-        if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
+        if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false);}
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && canJump)
         {
@@ -81,11 +93,13 @@ public class Move : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X) && !isDashing && canDash)
         {
             SwordCollider.Instance.EnableAttack(1f);
+            
             StartCoroutine(DashRoutine());
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            StartCoroutine(SpecialAttackRoutine(7f));
+            Player.Instance.IsUsingSkill = true;
+            StartCoroutine(SpecialAttackRoutine(4.4f));
             anim.SetTrigger("P");
         }
 
@@ -139,48 +153,80 @@ public class Move : MonoBehaviour
             // 2. 물리 이동 (Ground 레이어와는 충돌이 켜져 있으므로 벽에서 멈춤)
             Vector3 nextPos = rb.position + (dashDirection * currentDashSpeed * Time.deltaTime);
             rb.MovePosition(nextPos);
-
+            Player.Instance.SetInvincible(true);
             elapsed += Time.deltaTime;
             yield return null;
         }
-
+        Player.Instance.SetInvincible(false);
         // 3. 대쉬 종료: 충돌 무시 설정 복구
-        Physics.IgnoreLayerCollision(playerLayer, monsterLayer, false);
+        //Physics.IgnoreLayerCollision(playerLayer, monsterLayer, false);
 
         rb.useGravity = originalGravity;
         isDashing = false;
 
         yield return new WaitForSeconds(dashCooldown);
+
+        //if (DashSkill != null)
+        //{
+        //    float cooldownElapsed = 0f;
+        //    while (cooldownElapsed < dashCooldown)
+        //    {
+        //        cooldownElapsed += Time.deltaTime;
+        //        // fillAmount는 0~1 사이 값이므로, 
+        //        // (경과시간 / 전체시간)을 1에서 빼서 줄어드는 효과를 만듭니다.
+        //        DashSkill.fillAmount = cooldownElapsed / dashCooldown;
+        //        yield return null;
+        //    }
+        //    DashSkill.fillAmount = 1f; // 쿨타임 종료 시 꽉 채움
+        //}
+
         canDash = true;
     }
 
     IEnumerator AttackRoutine()
     {
         isAttacking = true;
-        int comboCount = 1;
+        int comboCount = 0;
+
+        // 첫 타는 즉시 실행
+        anim.SetTrigger("Attack");
+
         while (comboCount < 5)
         {
-            Debug.Log(comboCount + "타 시작");
             canCombo = true;
             nextInputReady = false;
+
             float timer = 0f;
+            // 입력 가능 시간(콤보 딜레이) 동안 대기
             while (timer < comboDelay)
             {
                 timer += Time.deltaTime;
-                if (nextInputReady) break;
+                if (nextInputReady) break; // 입력이 들어오면 루프 탈출
                 yield return null;
             }
+
             canCombo = false;
-            if (!nextInputReady) break;
+
+            // 대기 시간이 끝났는데 입력이 없었다면 콤보 종료
+            if (!nextInputReady)
+            {
+                break;
+            }
+
+            // 입력이 있었다면 다음 타수 애니메이션 실행
             comboCount++;
+            anim.SetTrigger("Attack");
+            Debug.Log(comboCount + "타 연계 실행");
         }
+
+        // 루프가 완전히 종료(입력 실패 혹은 5타 완료)되면 호출
         ResetCombo();
     }
 
     IEnumerator JumpCooldown()
     {
         canJump = false;
-        yield return new WaitForSeconds(2.3f);
+        yield return new WaitForSeconds(2f);
         canJump = true;
     }
 
@@ -189,18 +235,19 @@ public class Move : MonoBehaviour
         isAttacking = true; // 공격 상태 시작
         Player.Instance.SetInvincible(true);
         // 공격 설정 및 애니메이션 실행
-        SwordCollider.Instance.EnableAttack(6f);
+        SwordCollider.Instance.EnableAttack(duration);
         anim.SetTrigger("P");
 
-        // 6초 동안 대기
+        // duration초 동안 대기
         yield return new WaitForSeconds(duration);
 
         isAttacking = false; // 공격 상태 종료
         Player.Instance.SetInvincible(false);
+        Player.Instance.IsUsingSkill = false;
         Debug.Log("특수 공격 종료");
     }
 
-    void ResetCombo()
+    public void ResetCombo()
     {
         Debug.Log("콤보 리셋");
         isAttacking = false;
@@ -241,4 +288,6 @@ public class Move : MonoBehaviour
  * 어택스텝 3 -> 4 딜레이 0.5초 안에 입력하지 않을 경우 0으로 해당 스텝에 z키를 입력했을 경우 어택 스탭은 4로 고정하고 입력했으니까 다음 스탭으로 넘어가야함
  * 어택스텝 4 -> 5 딜레이 0.5초 안에 입력하지 않을 경우 0으로 해당 스텝에 z키를 입력했을 경우 어택 스탭은 5로 고정하고 입력했으니까 다음 스탭으로 넘어가야함
  * 어택스텝 5 애니메이션 종료 후 0으로
+ * 
+ * 콤보 시스템의 수정이 필요함
  */

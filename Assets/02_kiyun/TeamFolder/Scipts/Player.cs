@@ -1,5 +1,7 @@
 using UnityEditor.Build;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour,IDamageable
 {
@@ -12,6 +14,10 @@ public class Player : MonoBehaviour,IDamageable
     private int hp;
     [SerializeField]
     private int maxHp; // Inspector에서 설정 가능하도록 public
+
+    [SerializeField]
+    private Image hpFillBar;
+
 
     public int Hp
     {
@@ -47,6 +53,13 @@ public class Player : MonoBehaviour,IDamageable
         set => isInvincible = value;
     }
 
+    private bool isUsingSkill;
+    public bool IsUsingSkill
+    {
+        get => isUsingSkill;
+        set => isUsingSkill = value;
+    }
+
     [SerializeField]
     private bool die;
     public bool Die
@@ -71,16 +84,27 @@ public class Player : MonoBehaviour,IDamageable
     {
         if (Die || isInvincible) return;
         Hp -= _damage;
-
+        Debug.Log("현재 hp : "+ hp);
+        Debug.Log("현재 Hp : " + Hp);
         float damagePercentage = (float)_damage / maxHp;
 
-        if (damagePercentage >= 0.03f) // 3% 이상일 때
+        if (hpFillBar != null)
+        {
+            hpFillBar.fillAmount = (float)hp / maxHp;
+            Debug.Log((float)hp / maxHp);
+        }
+
+        if (damagePercentage >= 0.05f) // 5% 이상일 때
         {
             anim.SetTrigger("Hit");
+            IsInvincible = true;
+            StartCoroutine(DamgeIsInvincible());
         }
-        else // 3% 미만일 때
+        else // 5% 미만일 때
         {
             anim.SetTrigger("Hit2");
+            IsInvincible = true;
+            StartCoroutine(DamgeIsInvincible());
         }
         if (Hp <= 0)
         {
@@ -95,8 +119,18 @@ public class Player : MonoBehaviour,IDamageable
         Att = value; // 또는 Att = value; 둘 다 가능
     }
 
+    public int GetAttackPower()
+    {
+        return Att;
+    }
+
     public void SetInvincible(bool value)
     {
         IsInvincible = value;
+    }
+    IEnumerator DamgeIsInvincible()
+    {
+        yield return new WaitForSeconds(1f);
+        IsInvincible = false;
     }
 }

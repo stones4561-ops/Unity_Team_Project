@@ -10,6 +10,7 @@ public class SwordCollider : MonoBehaviour
     private bool isAttacking;
     private Coroutine disableCoroutine;
 
+
     private void Awake()
     {
         if (instance == null)
@@ -25,6 +26,7 @@ public class SwordCollider : MonoBehaviour
 
     public void EnableAttack(float duration)
     {
+        Debug.Log("검 콜라이더 온");
         swordCollider.enabled = true;
         isAttacking = true;
 
@@ -49,11 +51,16 @@ public class SwordCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // 실제로 누가 닿았는지 확인
-        Debug.Log($"닿은 대상: {other.gameObject.name}, 대상의 태그: {other.gameObject.tag}"); 
 
         if (other.CompareTag("Player")) return;
         if (other.CompareTag("Ground")) return;
+
+        IDamageable idamageable = other.GetComponent<IDamageable>();
+
+        if (idamageable != null)
+        {
+            idamageable.TakeDamage(Player.Instance.GetAttackPower());
+        }
 
         //int playerDamage = Player.Instance.Att;
 
@@ -84,3 +91,4 @@ public class SwordCollider : MonoBehaviour
     }
 
 }
+//2타 타격 판정 - 검 콜라이더를 켜 주는게 호출이 안됨

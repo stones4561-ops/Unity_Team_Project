@@ -51,7 +51,7 @@ public class RabbitPatrol : MonoBehaviour
 
 
         bool isGrounded = Physics.Raycast(frontVec, Vector3.down, out RaycastHit hit, transform.localScale.y / 2 + 0.2f, LayerMask.GetMask("Ground"));
-        Debug.Log(isGrounded);
+        
 
         if (!isGrounded && moveDirection != 0)
         {

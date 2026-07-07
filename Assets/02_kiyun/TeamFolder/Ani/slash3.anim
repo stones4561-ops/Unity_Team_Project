@@ -16927,4 +16927,11 @@ AnimationClip:
     flags: 0
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 1.0833334
+    functionName: OnAttackAnimationFinished
+    data: 
+    objectReferenceParameter: {fileID: 6122612505236125757, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
