@@ -61,9 +61,11 @@ public class DropItem : MonoBehaviour
     {
         if (!isFollowing || targetPlayer == null) return;
 
+        Vector3 targetPos = targetPlayer.transform.position;
+        targetPos.y += 0.5f;
 
         transform.position = Vector3.MoveTowards
-            (transform.position, targetPlayer.position, currentSpeed * Time.deltaTime);
+            (transform.position, targetPos, currentSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetPlayer.position) < 0.5f)
         {
@@ -114,7 +116,8 @@ public class DropItem : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
 
         float jumpForce = 5f;
-        Vector3 force = new Vector3(0, jumpForce, 0);
+        float spread = Random.Range(-1.5f, 1.5f);
+        Vector3 force = new Vector3(spread, jumpForce, 0);
 
         rb.AddForce(force, ForceMode.Impulse);
 

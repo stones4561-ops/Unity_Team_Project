@@ -7,5 +7,5 @@ public class MonsterSO : ScriptableObject
     public int monsterHP;
     public int monsterAtk;
     public float monsterSpeed;
-    
+    public float monsterDeathTime;
 }

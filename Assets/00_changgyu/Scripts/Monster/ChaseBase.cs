@@ -6,7 +6,7 @@ public abstract class ChaseBase : MonoBehaviour
     [Header("추적 및 공격 설정")] 
     [SerializeField] protected Transform player;
     [SerializeField] private float chaseRange = 5f;
-    [SerializeField] private float attackDetectedRange = 1.5f;
+    [SerializeField] protected float attackDetectedRange = 1.5f;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] private float minActionTime = 1f;
     [SerializeField] private float maxActionTime = 3f;
@@ -61,7 +61,7 @@ public abstract class ChaseBase : MonoBehaviour
         // 1. 상태 판단 (공격 중이 아닐 때만 상태 변경)
         if (!isAttacking)
         {
-            if (distanceToPlayer <= attackDetectedRange)
+            if (distanceToPlayer <= attackDetectedRange&& CheckCustomAttackCondition())
             {
                 currentState = State.Attack; // 사거리 내: 공격
             }
@@ -79,23 +79,33 @@ public abstract class ChaseBase : MonoBehaviour
                 currentState = State.Patrol; // 그 외: 순찰
             }
         }
-
-        // 2. 현재 상태에 따른 행동 실행
-        switch (currentState)
+        else
         {
-            case State.Patrol:
-                UpdatePatrol();
-                break;
-            case State.Chase:
-                UpdateChase(distanceToPlayer);
-                ChaseEnd();
-                break;
-            case State.Attack:
-                if (!isAttacking) StartCoroutine(AttackRoutine());
-                break;
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         }
 
+            // 2. 현재 상태에 따른 행동 실행
+            switch (currentState)
+            {
+                case State.Patrol:
+                    UpdatePatrol();
+                    break;
+                case State.Chase:
+                    UpdateChase(distanceToPlayer);
+                    ChaseEnd();
+                    break;
+                case State.Attack:
+                    if (!isAttacking) StartCoroutine(AttackRoutine());
+                    break;
+            }
+
     }
+
+    protected virtual bool CheckCustomAttackCondition()
+    {
+        return true;
+    }
+
 
     // --- [순찰 로직] ---
     private void UpdatePatrol()

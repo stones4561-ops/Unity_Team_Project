@@ -16,3 +16,4 @@ MonoBehaviour:
   monsterHP: 10
   monsterAtk: 0
   monsterSpeed: 1
+  monsterDeathTime: 4

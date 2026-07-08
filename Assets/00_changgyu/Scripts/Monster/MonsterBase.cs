@@ -16,6 +16,9 @@ public class MonsterBase : MonoBehaviour,IDamageable
     [SerializeField]
     private DropTableSO dropTableSO;
 
+   
+    private float knockbackForce = 3f;
+
     private List<bool> dropBool = new List<bool>();
 
     private string monsterName;
@@ -23,6 +26,7 @@ public class MonsterBase : MonoBehaviour,IDamageable
     private int monsterHP;
     private int maxHP;
     private int monsterAtk;
+    private float monsterDeathTime;
     public int MonsterAtk
     { get { return monsterAtk;} }
     private float monsterSpeed;
@@ -35,8 +39,8 @@ public class MonsterBase : MonoBehaviour,IDamageable
     { get; set; } = false;
     public bool IsDead
     { get; set; } = false;
-    
 
+    private Coroutine hitCoroutine;
     
 
     private void Awake()
@@ -46,6 +50,7 @@ public class MonsterBase : MonoBehaviour,IDamageable
         monsterHP=maxHP;
         monsterAtk = myData.monsterAtk;
         monsterSpeed = myData.monsterSpeed;
+        monsterDeathTime = myData.monsterDeathTime;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -81,14 +86,14 @@ public class MonsterBase : MonoBehaviour,IDamageable
         if (monsterHP <= 0)
         {
             IsDead = true;
+            if(hitCoroutine != null) StopCoroutine(hitCoroutine);
             StartCoroutine(Dead());
         }
         else
         {
-            StartCoroutine(HitCorou());
+            if (hitCoroutine != null) StopCoroutine(hitCoroutine);
+            hitCoroutine=StartCoroutine(HitCorou());
         }
-
-
 
     }
 
@@ -96,7 +101,7 @@ public class MonsterBase : MonoBehaviour,IDamageable
     {
         rb.linearVelocity = Vector3.zero;
         anim.SetTrigger("isDead");
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(monsterDeathTime);
         for(int i=0;i<dropBool.Count;i++)
         {
             if(dropBool[i])
@@ -116,10 +121,20 @@ public class MonsterBase : MonoBehaviour,IDamageable
 
         rb.linearVelocity = Vector3.zero;
 
+        Vector3 knockbackDir=-transform.forward;
+
+        knockbackDir.y = 0;
+
+        rb.AddForce(knockbackDir.normalized*knockbackForce,ForceMode.Impulse);
+
         yield return new WaitForSeconds(0.5f);
+
+        rb.linearVelocity = Vector3.zero;
 
         IsHit = false;
     }
-    
+
    
+
+
 }
