@@ -2,6 +2,7 @@ using UnityEditor.Build;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using JetBrains.Annotations;
 
 public class Player : MonoBehaviour,IDamageable
 {
@@ -109,8 +110,27 @@ public class Player : MonoBehaviour,IDamageable
         if (Hp <= 0)
         {
             anim.SetTrigger("Die");
-            //Die = true;
+            Die = true;
+            StartCoroutine(PlayerWaitTwoSeconds());
         }
+    }
+
+    private IEnumerator PlayerWaitTwoSeconds()
+    {
+        // 2초 동안 대기
+        yield return new WaitForSeconds(2.0f);
+        StartCoroutine(UIManager.Instance.FadeInRoutine(1f));
+        UIManager.Instance.ReSpawnUI();
+        // 2초 뒤에 실행할 코드 작성
+        Debug.Log("2초가 지났습니다!");
+    }
+
+    public void PlayerReSpawn()
+    {
+        Hp = maxHp;
+        hpFillBar.fillAmount = 1f;
+        anim.Play("Blend Tree");
+        Die = false;
     }
 
     // 클래스 내부에서 값을 설정할 때

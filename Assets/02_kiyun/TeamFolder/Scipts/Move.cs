@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Move : MonoBehaviour
 {
     private static Move instance;
-    public static Move Instance {  get { return instance; } }
+    public static Move Instance { get { return instance; } }
 
     [Header("Movement Settings")]
     public float walkSpeed = 4f;
@@ -45,7 +45,7 @@ public class Move : MonoBehaviour
             Destroy(this.gameObject);
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-        
+
         // 물리 이동을 위해 필수 설정
         rb.interpolation = RigidbodyInterpolation.Interpolate;
     }
@@ -56,13 +56,13 @@ public class Move : MonoBehaviour
         if (isDashing || Player.Instance.IsUsingSkill) return;
 
         // 2. 이동 로직 (Rigidbody 사용)
-        if(!isAttacking && !Player.Instance.Die)
+        if (!isAttacking && !Player.Instance.Die)
             HandleMovement();
 
         // 3. 레이캐스트 및 점프/공격 입력
         int groundLayer = LayerMask.GetMask("Ground");
         isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
-        if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false);}
+        if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && canJump)
         {
@@ -74,7 +74,7 @@ public class Move : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            SwordCollider.Instance.EnableAttack(1f);
+            //SwordCollider.Instance.EnableAttack(1f);
             if (isGrounded && !isAttacking)
             {
                 StartCoroutine(AttackRoutine());
@@ -87,13 +87,13 @@ public class Move : MonoBehaviour
                 anim.SetTrigger("Attack");
             }
             if (!isGrounded)
-                anim.SetBool("Down Attack",true);
+                anim.SetBool("Down Attack", true);
         }
 
         if (Input.GetKeyDown(KeyCode.X) && !isDashing && canDash)
         {
-            SwordCollider.Instance.EnableAttack(1f);
-            
+            //SwordCollider.Instance.EnableAttack(1f);
+
             StartCoroutine(DashRoutine());
         }
         if (Input.GetKeyDown(KeyCode.C))
@@ -115,7 +115,7 @@ public class Move : MonoBehaviour
 
             float speed = isRunning ? runSpeed : walkSpeed;
             Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
-            
+
             // MovePosition을 사용해야 물리 엔진이 이동을 인지하고 충돌을 처리함
             rb.MovePosition(rb.position + moveDirection * speed * Time.deltaTime);
 
@@ -191,7 +191,7 @@ public class Move : MonoBehaviour
         // 첫 타는 즉시 실행
         anim.SetTrigger("Attack");
 
-        while (comboCount < 5)
+        while (comboCount < 6)
         {
             canCombo = true;
             nextInputReady = false;
@@ -229,13 +229,13 @@ public class Move : MonoBehaviour
         yield return new WaitForSeconds(2f);
         canJump = true;
     }
-
+    //사용 중에 무적이 안되는 버그 발견 나중에 수정
     IEnumerator SpecialAttackRoutine(float duration)
     {
         isAttacking = true; // 공격 상태 시작
         Player.Instance.SetInvincible(true);
         // 공격 설정 및 애니메이션 실행
-        SwordCollider.Instance.EnableAttack(duration);
+        //SwordCollider.Instance.EnableAttack(duration);
         anim.SetTrigger("P");
 
         // duration초 동안 대기
@@ -273,7 +273,57 @@ public class Move : MonoBehaviour
     {
         anim.SetTrigger("Hit2");
     }
-    
+
+
+    // 애니메이션 이벤트가 호출할 함수
+    public void OnAttackAnimationFinished()
+    {
+        Debug.Log("애니메이션 끝! 공격 상태 초기화");
+        SwordCollider.Instance.DisableAttack();
+    }
+
+    public void OnAttackAimationStart()
+    {
+        Debug.Log("애니메이션 시작");
+        SwordCollider.Instance.OnAttack();
+    }
+
+    public void StartHitAimation()
+    {
+        SwordCollider.Instance.DisableAttack();
+    }
+
+    public void Knockback(Vector3 attackerPosition, float force)
+    {
+        // 공격자 반대 방향 계산
+        Vector3 direction = (transform.position - attackerPosition).normalized;
+        direction.y = 0.5f;
+
+        // 넉백 수행 코루틴 시작
+        StartCoroutine(KnockbackRoutine(direction, force));
+    }
+
+    IEnumerator KnockbackRoutine(Vector3 direction, float force)
+    {
+        float duration = 0.2f; // 넉백 지속 시간
+        float elapsed = 0f;
+
+        // 밀려나는 목표 지점 계산
+        Vector3 startPos = rb.position;
+        Vector3 targetPos = startPos + (direction * force);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            // MovePosition을 사용해 지정된 위치로 이동
+            // 물리 엔진이 충돌을 감지하면서 부드럽게 이동시킴
+            rb.MovePosition(Vector3.Lerp(startPos, targetPos, t));
+
+            yield return null;
+        }
+    }
 }
 
 /*

@@ -23,7 +23,7 @@ public class SwordCollider : MonoBehaviour
     {
         swordCollider.enabled = false; // 평소엔 끔
     }
-
+    //안씀
     public void EnableAttack(float duration)
     {
         Debug.Log("검 콜라이더 온");
@@ -41,6 +41,12 @@ public class SwordCollider : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         DisableAttack();
+    }
+
+    public void OnAttack()
+    {
+        swordCollider.enabled = true;
+        isAttacking = true;
     }
 
     public void DisableAttack()
