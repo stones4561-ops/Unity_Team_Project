@@ -12,6 +12,8 @@ public class Move : MonoBehaviour
     public float walkSpeed = 4f;
     public float runSpeed = 7f;
     public float jumpForce = 5f;
+    public float minX;             // 화면 왼쪽 끝 제한 (최소 X값)
+    public float maxX;             // 화면 오른쪽 끝 제한 (최대 X값)
 
     [Header("Attack Settings")]
     public float comboDelay = 0.3f;
@@ -64,7 +66,7 @@ public class Move : MonoBehaviour
         isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
         if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && canJump)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded && canJump)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
@@ -108,24 +110,30 @@ public class Move : MonoBehaviour
     void HandleMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-        if (Mathf.Abs(horizontalInput) > 0.01f)
-        {
-            bool isRunning = Input.GetKey(KeyCode.LeftShift);
-            anim.SetFloat("Blend", isRunning ? 1f : 0.7f);
+    if (Mathf.Abs(horizontalInput) > 0.01f)
+    {
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        anim.SetFloat("Blend", isRunning ? 1f : 0.7f);
 
-            float speed = isRunning ? runSpeed : walkSpeed;
-            Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
+        float speed = isRunning ? runSpeed : walkSpeed;
+        Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
 
-            // MovePosition을 사용해야 물리 엔진이 이동을 인지하고 충돌을 처리함
-            rb.MovePosition(rb.position + moveDirection * speed * Time.deltaTime);
+        // 1. 이동할 목표 위치 계산
+        Vector3 targetPosition = rb.position + (moveDirection * speed * Time.deltaTime);
 
-            // horizontalInput이 0보다 크면 90도, 아니면 270도로 회전
-            transform.rotation = Quaternion.Euler(0f, horizontalInput > 0 ? 90f : 270f, 0f);
-        }
-        else
-        {
-            anim.SetFloat("Blend", 0f);
-        }
+        // 2. 이동 제한 적용 (Mathf.Clamp 사용)
+        targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+
+        // 3. 제한된 위치로 이동
+        rb.MovePosition(targetPosition);
+
+        // 회전 로직
+        transform.rotation = Quaternion.Euler(0f, horizontalInput > 0 ? 90f : 270f, 0f);
+    }
+    else
+    {
+        anim.SetFloat("Blend", 0f);
+    }
     }
 
     IEnumerator DashRoutine()

@@ -11,6 +11,8 @@ public class Player : MonoBehaviour,IDamageable
 
     public Animator anim;
 
+    public CameraShake cameraShake;
+
     [SerializeField]
     private int hp;
     [SerializeField]
@@ -69,6 +71,9 @@ public class Player : MonoBehaviour,IDamageable
         private set => die = value;
     }
 
+
+
+
     private void Awake()
     {
         if (instance == null)
@@ -103,6 +108,7 @@ public class Player : MonoBehaviour,IDamageable
         }
         else // 5% 미만일 때
         {
+            cameraShake.Shake(0.1f, 0.2f);
             anim.SetTrigger("Hit2");
             IsInvincible = true;
             StartCoroutine(DamgeIsInvincible());
@@ -152,5 +158,11 @@ public class Player : MonoBehaviour,IDamageable
     {
         yield return new WaitForSeconds(1f);
         IsInvincible = false;
+    }
+
+    public void OnHit()
+    {
+        // 0.2초 동안 0.1f 강도로 흔들기
+        cameraShake.Shake(0.2f, 0.1f);
     }
 }
