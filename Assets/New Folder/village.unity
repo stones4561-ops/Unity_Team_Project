@@ -35811,6 +35811,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFootstep
   footstepClips:
   - {fileID: 8300000, guid: fa814d67374ed744ea0b38a8d40b2057, type: 3}
+--- !u!114 &1662887230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662887210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c191322fc3ffd2444b6b7d4a880948e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttackSound
+  swingSounds:
+  - {fileID: 8300000, guid: c5955b1ca51d47245ae5e5e10395d910, type: 3}
+  - {fileID: 8300000, guid: a7736c1763bd76c4eb0d52aaad581deb, type: 3}
+  - {fileID: 8300000, guid: ef18a5a7071e4a54ba749b93057e0864, type: 3}
+  - {fileID: 8300000, guid: 180f35aef2ea2654086bcbb52d58ec0b, type: 3}
+  - {fileID: 8300000, guid: 80502e18f68bb734b9dded7bb8d2e750, type: 3}
+--- !u!114 &1662887231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662887210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d6103b06342b2b4fad47c497c244d52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDashSound
+  dashSound: {fileID: 8300000, guid: ce9a41258643d7a458646b4721cfae36, type: 3}
+--- !u!114 &1662887232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662887210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7b4c4e58ebb064ba8b9600618b66b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUltimateSound
+  ultSounds:
+  - {fileID: 8300000, guid: ecb642c8078cb814fb9efb6b2b223cf6, type: 3}
+  - {fileID: 8300000, guid: 2829a5212f9da134e88443a1f91d0e48, type: 3}
+  - {fileID: 8300000, guid: 80dbcb231e1605542bba4f6ba7269548, type: 3}
+  - {fileID: 8300000, guid: bf685e2b67465c64c8f5efdc5b241fd1, type: 3}
+  - {fileID: 8300000, guid: fc2e32796ec46dc49a895cd03564a3e3, type: 3}
 --- !u!1001 &1663964713
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38127,11 +38176,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1047363026384286712, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.77
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 1047363026384286712, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -36.38
+      value: -29.14
       objectReference: {fileID: 0}
     - target: {fileID: 1047363026384286712, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
       propertyPath: m_LocalPosition.z
@@ -38515,6 +38564,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6122612505236125757, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1662887224}
+    - targetCorrespondingSourceObject: {fileID: 6122612505236125757, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1662887230}
+    - targetCorrespondingSourceObject: {fileID: 6122612505236125757, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1662887231}
+    - targetCorrespondingSourceObject: {fileID: 6122612505236125757, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1662887232}
   m_SourcePrefab: {fileID: 100100000, guid: bfb9a40672a23d24f8e357671da8b973, type: 3}
 --- !u!1 &1810720654
 GameObject:
