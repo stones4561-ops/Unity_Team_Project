@@ -59,6 +59,15 @@ public class WolfAI : ChaseBase
         Draw2DHalfCircle(transform.position, transform.forward.x > 0, attackRange);
     }
 
+    protected override void CancelAttackAnim()
+    {
+        if (anim != null)
+        {
+            anim.ResetTrigger("Attack");
+        }
+    }
+
+
     /// <summary>
     /// 횡스크롤에 맞춰 앞쪽 반원(180도) 영역을 그리는 기즈모
     /// </summary>

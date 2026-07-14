@@ -9,6 +9,8 @@ public class MonsterSpawner : MonoBehaviour
     private int monCount;
     [SerializeField]
     private float spawnRate;
+    [SerializeField]
+    private GameObject player;
 
     private List<GameObject> monList=new List<GameObject>();
 
@@ -21,6 +23,8 @@ public class MonsterSpawner : MonoBehaviour
             GameObject mon = Instantiate(monPF,transform.position, Quaternion.Euler(0, 90, 0),transform);
             mon.SetActive(false);
             monList.Add(mon);
+
+            mon.GetComponent<ChaseBase>()?.SetPlayer(player.transform);
         }
 
         InvokeRepeating("SpawnMonster",0,spawnRate);

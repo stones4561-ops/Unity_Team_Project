@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class ChaseBase : MonoBehaviour
 {
     [Header("추적 및 공격 설정")] 
-    [SerializeField] protected Transform player;
+    public Transform player;
     [SerializeField] private float chaseRange = 5f;
     [SerializeField] protected float attackDetectedRange = 1.5f;
     [SerializeField] protected float attackRange = 2f;
@@ -29,6 +29,8 @@ public abstract class ChaseBase : MonoBehaviour
     private float chaseCooldownTime;
     private float chaseCooldownTimer = 0f;
 
+    protected Coroutine attackCoroutine;
+
 
     private enum State { Patrol, Chase, Attack }
     private State currentState = State.Patrol;
@@ -46,9 +48,32 @@ public abstract class ChaseBase : MonoBehaviour
         ChooseNextAction();
     }
 
+    protected virtual void OnEnable()
+    {
+        // 부활할 때 다시 순찰 상태부터 정직하게 시작하도록 세팅
+        currentState = State.Patrol;
+        isAttacking = false;
+        chaseCooldownTimer = 0f;
+        ChooseNextAction();
+    }
+
     private void Update()
     {
-        if (mBase.IsHit || mBase.IsDead) return;
+        if (mBase.IsHit || mBase.IsDead)
+        { 
+            if(isAttacking)
+            {
+                if (attackCoroutine != null) StopCoroutine(attackCoroutine);
+                isAttacking = false;
+
+                CancelAttackAnim();
+
+
+            }
+            
+            return;
+        
+        }
 
         if (chaseCooldownTimer > 0)
         {
@@ -95,7 +120,7 @@ public abstract class ChaseBase : MonoBehaviour
                     ChaseEnd();
                     break;
                 case State.Attack:
-                    if (!isAttacking) StartCoroutine(AttackRoutine());
+                    if (!isAttacking) attackCoroutine= StartCoroutine(AttackRoutine());
                     break;
             }
 
@@ -104,6 +129,11 @@ public abstract class ChaseBase : MonoBehaviour
     protected virtual bool CheckCustomAttackCondition()
     {
         return true;
+    }
+
+    protected virtual void CancelAttackAnim()
+    {
+
     }
 
 
@@ -212,7 +242,10 @@ public abstract class ChaseBase : MonoBehaviour
 
     protected abstract IEnumerator AttackRoutine();
     
-
+    public void SetPlayer(Transform _player)
+    {
+        player = _player;
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3cda15264831afc41acb7d919124ffd8, type: 3}
-  m_Name: 02_0_Salt
+  m_Name: 04_BearMeat
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
-  itemName: "\uC18C\uAE08"
-  sellPrice: 1
-  max: 20
-  itemImage: {fileID: 21300000, guid: 19c036ead2e6e7643b551d01551059f7, type: 3}
+  itemName: "\uACF0\uACE0\uAE30"
+  sellPrice: 8
+  max: 5
+  itemImage: {fileID: 21300000, guid: c6c531e9c23db0e40b2eba0a8f947629, type: 3}

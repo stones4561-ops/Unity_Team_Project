@@ -37,6 +37,12 @@ public class RabbitPatrol : MonoBehaviour
 
     }
 
+    private void OnEnable()
+    {
+        anim.ResetTrigger("isDead");
+        ChooseNextAction();
+    }
+
     private void Update()
     {
         if (mBase.IsDead) return;

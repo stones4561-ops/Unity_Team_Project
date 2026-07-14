@@ -2034,7 +2034,7 @@ MonoBehaviour:
   myData: {fileID: 11400000, guid: 0945a8076f101874fa89990b12add4d2, type: 2}
   anim: {fileID: 3734775969355451150}
   hpFillBar: {fileID: 6746113745443158667}
-  dropTableSO: {fileID: 11400000, guid: 31dae3b61783c8446918b8a2d6c901f3, type: 2}
+  dropTableSO: {fileID: 11400000, guid: 4593dbb393f004e4fbdecedc50b6cf5b, type: 2}
 --- !u!114 &-9175729920321381960
 MonoBehaviour:
   m_ObjectHideFlags: 0

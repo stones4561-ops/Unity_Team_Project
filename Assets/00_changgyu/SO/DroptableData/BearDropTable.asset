@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b658931bc39b86149b94092cb23162a6, type: 3}
-  m_Name: WolfDropTable
+  m_Name: BearDropTable
   m_EditorClassIdentifier: Assembly-CSharp::DropTableSO
   dropItems:
-  - {fileID: 11400000, guid: 7002b21ae262b34499c6e5ae7ec76ad6, type: 2}
-  - {fileID: 11400000, guid: 4d923186071e58e498907bf92bf2db3e, type: 2}
+  - {fileID: 11400000, guid: f0a79416d4128e14d837e748d8ba18af, type: 2}
+  - {fileID: 11400000, guid: 56fe3bf238221a545a3d709fc1ff0760, type: 2}
   dropChance:
   - 100
-  - 30
+  - 100

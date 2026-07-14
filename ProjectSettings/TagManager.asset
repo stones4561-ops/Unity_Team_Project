@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
+  - DropItem
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - Player
   - Monster
   - Sword
-  - 
-  - 
+  - DropItem
+  - PlayerLooting
   - 
   - 
   - 

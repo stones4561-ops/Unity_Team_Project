@@ -61,6 +61,9 @@ public class MonsterBase : MonoBehaviour,IDamageable
         monsterHP = maxHP;
         hpFillBar.fillAmount = 1;
         IsDead = false;
+        IsHit = false;
+        
+
         dropBool.Clear();
         for(int i = 0; i < dropTableSO.dropChance.Length; i++)
         {
@@ -117,6 +120,8 @@ public class MonsterBase : MonoBehaviour,IDamageable
     private IEnumerator HitCorou()
     {
         IsHit = true;
+
+
         anim.SetTrigger("isHit");
 
         rb.linearVelocity = Vector3.zero;

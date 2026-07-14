@@ -17,4 +17,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b7e09851ed280eb42879add6f79d8c15, type: 2}
   dropChance:
   - 100
-  - 50
+  - 30
