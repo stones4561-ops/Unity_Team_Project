@@ -17325,6 +17325,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
+    functionName: PlayUltSound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.05
     functionName: OnAttackAimationStart
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -17333,13 +17340,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0.13333334
     functionName: StartTrail
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.26666668
-    functionName: PlayUltSound
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

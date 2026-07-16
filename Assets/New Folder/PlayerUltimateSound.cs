@@ -19,6 +19,7 @@ public class PlayerUltimateSound : MonoBehaviour
     // 마커에 연결할 함수 이름은 'PlayUltSound' 입니다!
     public void PlayUltSound(int index)
     {
+        Debug.Log("사운드 호출");
         // 빈칸이 아니면서 숫자가 알맞게 들어왔을 때만 소리 재생
         if (ultSounds != null && index >= 0 && index < ultSounds.Length)
         {
