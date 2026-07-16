@@ -76,6 +76,22 @@ public class SlotUI : MonoBehaviour,IBeginDragHandler, IEndDragHandler,IDragHand
         {
             if(eventData.button == PointerEventData.InputButton.Left)
             {
+                if (this.mySlot.IsItem && draggedSlotUI.MySlot.CurItemData == this.mySlot.CurItemData)
+                {
+                    if(draggedSlotUI.MySlot.CurItemMany+this.MySlot.CurItemMany <=draggedSlotUI.MySlot.CurItemData.max)
+                    {
+                        draggedSlotUI.MySlot.ItemUp(draggedSlotUI.MySlot.CurItemMany);
+                        this.MySlot.ItemClear();
+                    }
+                    else
+                    {
+                        int count= draggedSlotUI.MySlot.RemainToFull();
+                        draggedSlotUI.MySlot.ItemUp(count);
+                        this.MySlot.ItemDown(count);
+                    }
+                }
+
+
                 SwapSlotData(draggedSlotUI.mySlot, this.mySlot);
                 inventoryUI.Redraw();
             }
@@ -86,14 +102,7 @@ public class SlotUI : MonoBehaviour,IBeginDragHandler, IEndDragHandler,IDragHand
                     inventoryUI.OpenSplitPopup(draggedSlotUI.MySlot, this.mySlot);
                 }
             }
-            else
-            {
-                if (!this.mySlot.IsItem)
-                {
-                    SwapSlotData(draggedSlotUI.mySlot, this.mySlot);
-                    inventoryUI.Redraw();
-                }
-            }
+          
 
 
 

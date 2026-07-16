@@ -25,6 +25,7 @@ public class MonsterSpawner : MonoBehaviour
             monList.Add(mon);
 
             mon.GetComponent<ChaseBase>()?.SetPlayer(player.transform);
+            mon.GetComponent<MonsterBase>()?.SetPlayer(player.transform);
         }
 
         InvokeRepeating("SpawnMonster",0,spawnRate);

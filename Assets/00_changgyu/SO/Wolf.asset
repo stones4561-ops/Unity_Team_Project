@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wolf
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSO
   monsterName: "\uB291\uB300"
-  monsterHP: 10
-  monsterAtk: 0
+  monsterHP: 6
+  monsterAtk: 4
   monsterSpeed: 0.7
   monsterDeathTime: 3

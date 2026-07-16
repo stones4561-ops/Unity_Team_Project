@@ -16,6 +16,15 @@ public class MonsterBase : MonoBehaviour,IDamageable
     [SerializeField]
     private DropTableSO dropTableSO;
 
+    [SerializeField]
+    private Transform targetPlayer;
+
+    public void SetPlayer(Transform _player)
+    {
+        targetPlayer = _player;
+    }
+
+    
    
     private float knockbackForce = 3f;
 
@@ -121,6 +130,16 @@ public class MonsterBase : MonoBehaviour,IDamageable
     {
         IsHit = true;
 
+        if(targetPlayer != null)
+        {
+            float directionX= targetPlayer.position.x-transform.position.x;
+
+            if (directionX > 0)
+                transform.rotation = Quaternion.LookRotation(Vector3.right);
+            else if(directionX < 0)
+                transform.rotation= Quaternion.LookRotation(Vector3.left);
+                
+        }
 
         anim.SetTrigger("isHit");
 
