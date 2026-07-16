@@ -83,10 +83,16 @@ public class Player : MonoBehaviour,IDamageable
         Hp = maxHp;
         Die = false;
         anim = GetComponent<Animator>();
-        this.gameObject.transform.position = ReSpawnPointTrs.position;
+        
     }
 
-    
+    private void Start()
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.position = ReSpawnPointTrs.position;
+        rb.MovePosition(ReSpawnPointTrs.position);
+    }
+
     public void TakeDamage(int _damage)
     {
         if (Die || isInvincible) return;
