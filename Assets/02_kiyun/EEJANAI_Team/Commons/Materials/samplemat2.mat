@@ -27,17 +27,17 @@ Material:
   m_ValidKeywords:
   - _EMISSIVE_SIMPLE
   - _IS_ANGELRING_OFF
-  - _IS_CLIPPING_OFF
-  - _IS_OUTLINE_CLIPPING_NO
+  - _IS_CLIPPING_TRANSMODE
+  - _IS_OUTLINE_CLIPPING_YES
   - _OUTLINE_NML
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2450
   stringTagMap:
     IgnoreProjection: False
-    RenderType: Opaque
+    RenderType: TransparentCutout
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
@@ -297,7 +297,7 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _ClippingMatteMode: 0
-    - _ClippingMode: 0
+    - _ClippingMode: 2
     - _Clipping_Level: 0
     - _CoatMask: 0
     - _ColorShift_Speed: 0
@@ -520,18 +520,18 @@ Material:
     - _simpleUI: 0
     - _utsTechnique: 0
     - _utsVersionX: 0
-    - _utsVersionY: 10
-    - _utsVersionZ: 2
+    - _utsVersionY: 11
+    - _utsVersionZ: 0
     m_Colors:
     - _1st_ShadeColor: {r: 0.3018868, g: 0.046991818, b: 0.10802994, a: 1}
     - _2nd_ShadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _AngelRingMaskColor: {r: 0, g: 1, b: 0, a: 1}
     - _AngelRing_Color: {r: 1, g: 1, b: 1, a: 1}
     - _Ap_RimLightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColor: {r: 0.59607846, g: 0.24002858, b: 0.21568628, a: 1}
+    - _BaseColor: {r: 0.5960784, g: 0.24002853, b: 0.2156862, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColorMaskColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.5960784, g: 0.24002853, b: 0.2156862, a: 1}
+    - _Color: {r: 0.5960784, g: 0.2400285, b: 0.21568617, a: 1}
     - _ColorShift: {r: 0, g: 0, b: 0, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
@@ -560,3 +560,4 @@ Material:
     - _ViewShift: {r: 0, g: 0, b: 0, a: 1}
     - emissive: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

@@ -8,9 +8,12 @@ public class Move : MonoBehaviour
     private static Move instance;
     public static Move Instance { get { return instance; } }
 
+    public SwordCollider sword;
+
     [Header("Movement Settings")]
-    public float walkSpeed = 4f;
+    private float horizontalInput;
     public float runSpeed = 7f;
+    public float skillMoveSpeed = 2f;
     public float jumpForce = 5f;
     public float minX;             // 화면 왼쪽 끝 제한 (최소 X값)
     public float maxX;             // 화면 오른쪽 끝 제한 (최대 X값)
@@ -23,7 +26,7 @@ public class Move : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
     private bool canJump = true;
-    private bool lastGrounded;
+
 
     private bool isAttacking = false;
     private bool nextInputReady = false;
@@ -32,12 +35,16 @@ public class Move : MonoBehaviour
     [Header("Dash Settings")]
     public float dashSpeed = 5f;
     public float dashTime = 0.5f; // 너무 길면 조작이 답답하니 0.5초 정도로 권장
-    public float dashCooldown = 3f;
+    public float dashCoolTime = 3f;
     private bool isDashing = false;
     private bool canDash = true;
     [SerializeField]
-    private Image DashSkill;
+    private Image dashSkill_Image;
 
+    public bool c_key_Skill;
+    public float c_key_SkillCoolTime = 20f;
+    public Image c_key_Skill_Image;
+    public GameObject skillPF;
 
     private void Awake()
     {
@@ -54,6 +61,7 @@ public class Move : MonoBehaviour
 
     void Update()
     {
+        horizontalInput = Input.GetAxis("Horizontal");
         // 1. 대쉬 중엔 이동, 점프, 공격 로직을 아예 실행하지 않음
         if (isDashing || Player.Instance.IsUsingSkill) return;
 
@@ -66,7 +74,7 @@ public class Move : MonoBehaviour
         isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
         if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
 
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded && canJump)
+        if ((Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded && canJump)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
@@ -76,7 +84,6 @@ public class Move : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            //SwordCollider.Instance.EnableAttack(1f);
             if (isGrounded && !isAttacking)
             {
                 StartCoroutine(AttackRoutine());
@@ -89,51 +96,59 @@ public class Move : MonoBehaviour
                 anim.SetTrigger("Attack");
             }
             if (!isGrounded)
+            {
                 anim.SetBool("Down Attack", true);
+            }
+                
         }
 
         if (Input.GetKeyDown(KeyCode.X) && !isDashing && canDash)
         {
-            //SwordCollider.Instance.EnableAttack(1f);
-
             StartCoroutine(DashRoutine());
+            StartCoroutine(DashCooldownRoutine());
         }
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) && !c_key_Skill)
         {
-            Player.Instance.IsUsingSkill = true;
-            StartCoroutine(SpecialAttackRoutine(4.4f));
+            //Player.Instance.IsUsingSkill = true;
+            c_key_Skill = true;
+            SpawnSkillTr();
+            //StartCoroutine(SpecialAttackRoutine(4.4f));
+            StartCoroutine(CooldownRoutine(c_key_SkillCoolTime));
+
+            //anim.SetTrigger("P");
+        }
+        if(Input.GetKeyDown(KeyCode.V))
+        {
             anim.SetTrigger("P");
         }
-
     }
-
+    //걷기 삭제 후 달리기만 가능하도록 수정
     void HandleMovement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-    if (Mathf.Abs(horizontalInput) > 0.01f)
-    {
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        anim.SetFloat("Blend", isRunning ? 1f : 0.7f);
+        // 공격 중이면 이동 속도를 0으로, 아니면 원래 속도로
+        float currentSpeed = isAttacking ? 0f : runSpeed;
 
-        float speed = isRunning ? runSpeed : walkSpeed;
-        Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
+        if (Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            // 공격 중이 아니거나, 아주 살짝만 움직이게 하고 싶다면 currentSpeed를 조절
+            anim.SetFloat("Blend", 1f);
 
-        // 1. 이동할 목표 위치 계산
-        Vector3 targetPosition = rb.position + (moveDirection * speed * Time.deltaTime);
+            Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
+            Vector3 targetPosition = rb.position + (moveDirection * currentSpeed * Time.deltaTime);
 
-        // 2. 이동 제한 적용 (Mathf.Clamp 사용)
-        targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+            targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+            rb.MovePosition(targetPosition);
 
-        // 3. 제한된 위치로 이동
-        rb.MovePosition(targetPosition);
-
-        // 회전 로직
-        transform.rotation = Quaternion.Euler(0f, horizontalInput > 0 ? 90f : 270f, 0f);
-    }
-    else
-    {
-        anim.SetFloat("Blend", 0f);
-    }
+            // 공격 중에는 회전하지 않게 막을 수도 있습니다.
+            if (!isAttacking)
+            {
+                transform.rotation = Quaternion.Euler(0f, horizontalInput > 0 ? 90f : 270f, 0f);
+            }
+        }
+        else
+        {
+            anim.SetFloat("Blend", 0f);
+        }
     }
 
     IEnumerator DashRoutine()
@@ -141,8 +156,6 @@ public class Move : MonoBehaviour
         isDashing = true;
         canDash = false;
 
-        // 1. 대쉬 시작: 플레이어(몸체)와 몬스터 레이어 간의 충돌을 무시
-        // 주의: 공격 판정(Sword)은 이 레이어와 다르게 설정해야 타격이 가능합니다.
         int playerLayer = LayerMask.NameToLayer("Player");
         int monsterLayer = LayerMask.NameToLayer("Monster");
         Physics.IgnoreLayerCollision(playerLayer, monsterLayer, true);
@@ -158,36 +171,36 @@ public class Move : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < dashTime)
         {
-            // 2. 물리 이동 (Ground 레이어와는 충돌이 켜져 있으므로 벽에서 멈춤)
             Vector3 nextPos = rb.position + (dashDirection * currentDashSpeed * Time.deltaTime);
+            nextPos.x = Mathf.Clamp(nextPos.x, minX, maxX);
             rb.MovePosition(nextPos);
+
             Player.Instance.SetInvincible(true);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        Player.Instance.SetInvincible(false);
-        // 3. 대쉬 종료: 충돌 무시 설정 복구
-        //Physics.IgnoreLayerCollision(playerLayer, monsterLayer, false);
 
+        Player.Instance.SetInvincible(false);
         rb.useGravity = originalGravity;
         isDashing = false;
 
-        yield return new WaitForSeconds(dashCooldown);
+        // 동작 끝난 후 잠시 대기할 필요가 있다면 여기서 처리
+        //yield return new WaitForSeconds(0.1f);
+    }
 
-        //if (DashSkill != null)
-        //{
-        //    float cooldownElapsed = 0f;
-        //    while (cooldownElapsed < dashCooldown)
-        //    {
-        //        cooldownElapsed += Time.deltaTime;
-        //        // fillAmount는 0~1 사이 값이므로, 
-        //        // (경과시간 / 전체시간)을 1에서 빼서 줄어드는 효과를 만듭니다.
-        //        DashSkill.fillAmount = cooldownElapsed / dashCooldown;
-        //        yield return null;
-        //    }
-        //    DashSkill.fillAmount = 1f; // 쿨타임 종료 시 꽉 채움
-        //}
+    IEnumerator DashCooldownRoutine()
+    {
+        dashSkill_Image.fillAmount = 0f;
+        float elapsed = 0f;
 
+        while (elapsed < dashCoolTime)
+        {
+            elapsed += Time.deltaTime;
+            dashSkill_Image.fillAmount = elapsed / dashCoolTime;
+            yield return null;
+        }
+
+        dashSkill_Image.fillAmount = 1f;
         canDash = true;
     }
 
@@ -237,22 +250,39 @@ public class Move : MonoBehaviour
         yield return new WaitForSeconds(2f);
         canJump = true;
     }
-    //사용 중에 무적이 안되는 버그 발견 나중에 수정
+    // 1. 공격 자체를 수행하는 코루틴
     IEnumerator SpecialAttackRoutine(float duration)
     {
-        isAttacking = true; // 공격 상태 시작
+        isAttacking = true;
         Player.Instance.SetInvincible(true);
-        // 공격 설정 및 애니메이션 실행
-        //SwordCollider.Instance.EnableAttack(duration);
         anim.SetTrigger("P");
 
-        // duration초 동안 대기
+        // 2. 공격 동작만 수행하고 즉시 종료
         yield return new WaitForSeconds(duration);
 
-        isAttacking = false; // 공격 상태 종료
+        isAttacking = false;
         Player.Instance.SetInvincible(false);
         Player.Instance.IsUsingSkill = false;
-        Debug.Log("특수 공격 종료");
+
+        Debug.Log("특수 공격 동작 종료");
+    }
+
+    // 4. 쿨타임만 전담하는 별도의 코루틴
+    IEnumerator CooldownRoutine(float coolTime)
+    {
+        c_key_Skill_Image.fillAmount = 0f;
+        float elapsed = 0f;
+
+        while (elapsed < coolTime)
+        {
+            elapsed += Time.deltaTime;
+            c_key_Skill_Image.fillAmount = elapsed / coolTime;
+            yield return null;
+        }
+
+        c_key_Skill_Image.fillAmount = 1f;
+        c_key_Skill = false; // 쿨타임 끝! 다시 사용 가능
+        Debug.Log("쿨타임 종료");
     }
 
     public void ResetCombo()
@@ -262,6 +292,15 @@ public class Move : MonoBehaviour
         canCombo = false;
         nextInputReady = false;
     }
+
+    public void SpawnSkillTr()
+    {
+        // 1. 오브젝트 생성
+        GameObject obj = Instantiate(skillPF, this.transform.position, this.transform.rotation);
+        // 3. 4.3초 뒤 삭제
+        Destroy(obj, 4.3f);
+    }
+
 
     void OnCollisionEnter(Collision collision)
     {
@@ -282,25 +321,25 @@ public class Move : MonoBehaviour
         anim.SetTrigger("Hit2");
     }
 
-
+    #region 검 콜라이더 관련 코드
     // 애니메이션 이벤트가 호출할 함수
     public void OnAttackAnimationFinished()
     {
         Debug.Log("애니메이션 끝! 공격 상태 초기화");
-        SwordCollider.Instance.DisableAttack();
+        sword.DisableAttack();
     }
 
     public void OnAttackAimationStart()
     {
         Debug.Log("애니메이션 시작");
-        SwordCollider.Instance.OnAttack();
+        sword.OnAttack();
     }
 
     public void StartHitAimation()
     {
-        SwordCollider.Instance.DisableAttack();
+        sword.DisableAttack();
     }
-
+    #endregion
     public void Knockback(Vector3 attackerPosition, float force)
     {
         // 공격자 반대 방향 계산

@@ -72,8 +72,6 @@ public class Player : MonoBehaviour,IDamageable
     }
 
 
-
-
     private void Awake()
     {
         if (instance == null)

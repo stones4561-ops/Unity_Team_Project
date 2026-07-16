@@ -2,45 +2,15 @@ using UnityEngine;
 
 public class SwordCollider : MonoBehaviour
 {
-    private static SwordCollider instance;
-    public static SwordCollider Instance {  get { return instance; } }
-
     public Collider swordCollider; // 검의 콜라이더를 인스펙터에서 연결
 
     private bool isAttacking;
     private Coroutine disableCoroutine;
 
 
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(this.gameObject);
-    }
-
     private void Start()
     {
         swordCollider.enabled = false; // 평소엔 끔
-    }
-    //안씀
-    public void EnableAttack(float duration)
-    {
-        Debug.Log("검 콜라이더 온");
-        swordCollider.enabled = true;
-        isAttacking = true;
-
-        // 만약 이전 코루틴이 돌고 있다면 멈춤
-        if (disableCoroutine != null) StopCoroutine(disableCoroutine);
-
-        // 설정한 초(duration)가 지나면 DisableAttack 호출
-        disableCoroutine = StartCoroutine(DisableAfterSeconds(duration));
-    }
-
-    private System.Collections.IEnumerator DisableAfterSeconds(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        DisableAttack();
     }
 
     public void OnAttack()
@@ -97,4 +67,3 @@ public class SwordCollider : MonoBehaviour
     }
 
 }
-//2타 타격 판정 - 검 콜라이더를 켜 주는게 호출이 안됨
