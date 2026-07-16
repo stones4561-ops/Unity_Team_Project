@@ -10,6 +10,8 @@ public class Move : MonoBehaviour
 
     public SwordCollider sword;
 
+    public PlayerInventory inventory;
+
     [Header("Movement Settings")]
     private float horizontalInput;
     public float runSpeed = 7f;
@@ -117,9 +119,10 @@ public class Move : MonoBehaviour
 
             //anim.SetTrigger("P");
         }
-        if(Input.GetKeyDown(KeyCode.V))
+
+        if (Input.GetKeyDown(KeyCode.I))
         {
-            anim.SetTrigger("P");
+            TurnInventory();
         }
     }
     //걷기 삭제 후 달리기만 가능하도록 수정
@@ -151,6 +154,17 @@ public class Move : MonoBehaviour
         }
     }
 
+    //인벤 열고 닫기
+    private void TurnInventory()
+    {
+        if (inventory.gameObject.activeSelf)
+            inventory.gameObject.SetActive(false);
+        else
+            inventory.gameObject.SetActive(true);
+    }
+
+    #region 대쉬 스킬
+    //대쉬 로직
     IEnumerator DashRoutine()
     {
         isDashing = true;
@@ -187,7 +201,7 @@ public class Move : MonoBehaviour
         // 동작 끝난 후 잠시 대기할 필요가 있다면 여기서 처리
         //yield return new WaitForSeconds(0.1f);
     }
-
+    //대쉬 쿨타임
     IEnumerator DashCooldownRoutine()
     {
         dashSkill_Image.fillAmount = 0f;
@@ -203,7 +217,9 @@ public class Move : MonoBehaviour
         dashSkill_Image.fillAmount = 1f;
         canDash = true;
     }
+    #endregion
 
+    #region 기본 공격
     IEnumerator AttackRoutine()
     {
         isAttacking = true;
@@ -244,12 +260,24 @@ public class Move : MonoBehaviour
         ResetCombo();
     }
 
+    public void ResetCombo()
+    {
+        Debug.Log("콤보 리셋");
+        isAttacking = false;
+        canCombo = false;
+        nextInputReady = false;
+    }
+    #endregion
+
+    //점프 모션이 이상해서 넣은 점프 쿨타임
     IEnumerator JumpCooldown()
     {
         canJump = false;
         yield return new WaitForSeconds(2f);
         canJump = true;
     }
+
+    #region 혹시 몰라서 남겨둠
     // 1. 공격 자체를 수행하는 코루틴
     IEnumerator SpecialAttackRoutine(float duration)
     {
@@ -266,8 +294,20 @@ public class Move : MonoBehaviour
 
         Debug.Log("특수 공격 동작 종료");
     }
+    #endregion
 
-    // 4. 쿨타임만 전담하는 별도의 코루틴
+
+    #region C스킬 분신 소환
+    //C 스킬 사용 시 분신이 나오는 것
+    public void SpawnSkillTr()
+    {
+        // 1. 오브젝트 생성
+        GameObject obj = Instantiate(skillPF, this.transform.position, this.transform.rotation);
+        // 3. 4.3초 뒤 삭제
+        Destroy(obj, 4.3f);
+    }
+
+    //C 키를 눌렀을 때 쿨타임
     IEnumerator CooldownRoutine(float coolTime)
     {
         c_key_Skill_Image.fillAmount = 0f;
@@ -284,24 +324,9 @@ public class Move : MonoBehaviour
         c_key_Skill = false; // 쿨타임 끝! 다시 사용 가능
         Debug.Log("쿨타임 종료");
     }
+    #endregion
 
-    public void ResetCombo()
-    {
-        Debug.Log("콤보 리셋");
-        isAttacking = false;
-        canCombo = false;
-        nextInputReady = false;
-    }
-
-    public void SpawnSkillTr()
-    {
-        // 1. 오브젝트 생성
-        GameObject obj = Instantiate(skillPF, this.transform.position, this.transform.rotation);
-        // 3. 4.3초 뒤 삭제
-        Destroy(obj, 4.3f);
-    }
-
-
+    //플레이어가 땅을 밟고 있는지 확인
     void OnCollisionEnter(Collision collision)
     {
         // 태그 대신 레이어 확인 (더 안전함)
@@ -310,7 +335,7 @@ public class Move : MonoBehaviour
             isGrounded = true;
         }
     }
-
+    #region 플레이어 피격 시 
     public void UseHitTrigger()
     {
         anim.SetTrigger("Hit");
@@ -320,6 +345,7 @@ public class Move : MonoBehaviour
     {
         anim.SetTrigger("Hit2");
     }
+    #endregion
 
     #region 검 콜라이더 관련 코드
     // 애니메이션 이벤트가 호출할 함수
@@ -340,6 +366,7 @@ public class Move : MonoBehaviour
         sword.DisableAttack();
     }
     #endregion
+
     public void Knockback(Vector3 attackerPosition, float force)
     {
         // 공격자 반대 방향 계산
@@ -372,6 +399,7 @@ public class Move : MonoBehaviour
         }
     }
 }
+
 
 /*
  * 입력 시마다 예약 단계가 증가가 아니라 입력하고 해당 단계를 유지 -> 딜레이 시간 안에 입력하지 않으면 초기화

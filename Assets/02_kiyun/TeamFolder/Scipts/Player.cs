@@ -21,6 +21,8 @@ public class Player : MonoBehaviour,IDamageable
     [SerializeField]
     private Image hpFillBar;
 
+    [SerializeField]
+    private Transform ReSpawnPointTrs;
 
     public int Hp
     {
@@ -81,6 +83,7 @@ public class Player : MonoBehaviour,IDamageable
         Hp = maxHp;
         Die = false;
         anim = GetComponent<Animator>();
+        this.gameObject.transform.position = ReSpawnPointTrs.position;
     }
 
     
@@ -134,6 +137,7 @@ public class Player : MonoBehaviour,IDamageable
         Hp = maxHp;
         hpFillBar.fillAmount = 1f;
         anim.Play("Blend Tree");
+        this.gameObject.transform.position = ReSpawnPointTrs.position;
         Die = false;
     }
 

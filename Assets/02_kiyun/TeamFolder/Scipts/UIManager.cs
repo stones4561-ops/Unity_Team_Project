@@ -7,13 +7,10 @@ public class UIManager : MonoBehaviour
     private static UIManager instance;
     public static UIManager Instance {  get { return instance; } }
 
-
-    [SerializeField]
-    private GameObject player;
-    [SerializeField]
-    private Transform ReSpawnPointTrs;
     [SerializeField]
     private Image ReSpawnImage;
+    [SerializeField]
+    private GameObject inven;
 
     private void Awake()
     {
@@ -35,13 +32,13 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
         StartCoroutine(FadeOutRoutine(2.0f));
         Player.Instance.PlayerReSpawn();
-        player.transform.position = ReSpawnPointTrs.position;
         // 2초 뒤에 실행할 코드 작성
         Debug.Log("2초가 지났습니다!");
     }
-
+    //플레이어 리스본 시
     private IEnumerator FadeOutRoutine(float duration)
     {
+       
         if (ReSpawnImage == null) yield break;
 
         Color startColor = ReSpawnImage.color;
@@ -62,9 +59,11 @@ public class UIManager : MonoBehaviour
         ReSpawnImage.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
         ReSpawnImage.gameObject.SetActive(false);
     }
-
+    //플레이어 사망 시
     public IEnumerator FadeInRoutine(float duration)
     {
+        if (inven.activeSelf)
+            inven.SetActive(false);
         if (ReSpawnImage == null) yield break;
 
         Color color = ReSpawnImage.color;

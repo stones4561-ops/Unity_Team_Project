@@ -27,43 +27,44 @@ public class SwordCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.CompareTag("Player")) return;
-        if (other.CompareTag("Ground")) return;
+        if (other.CompareTag("Player") || other.CompareTag("Ground")) return;
 
         IDamageable idamageable = other.GetComponent<IDamageable>();
+        MonsterBase monster = other.GetComponent<MonsterBase>(); // 여기서 null일 수 있음
 
+        // 1. 데미지 가능한 오브젝트인지 확인
         if (idamageable != null)
         {
-            idamageable.TakeDamage(Player.Instance.GetAttackPower());
+            // 몬스터 컴포넌트가 존재할 때만 죽음 여부 확인
+            if (monster == null || !monster.IsDead)
+            {
+                idamageable.TakeDamage(Player.Instance.GetAttackPower());
+
+                // 2. 피격 이펙트 처리 (몬스터 정보가 확실할 때만)
+                if (monster != null && !monster.IsDead)
+                {
+                    PlayHitEffect(other);
+                }
+            }
         }
+    }
 
-        //int playerDamage = Player.Instance.Att;
-
-        // 2. 몬스터(EnemyHealth) 컴포넌트 찾기
-        //EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-
-        //if (enemy != null) { enemy.TakeDamage(playerDamage); }
-
+    // 이펙트 로직을 별도 함수로 분리하여 코드 가독성을 높임
+    private void PlayHitEffect(Collider other)
+    {
         GameObject hitEffect = EffectManager.Instance.GetEffect("Hit");
         if (hitEffect != null)
         {
-            // 1. 위치 설정
             hitEffect.transform.position = other.ClosestPointOnBounds(transform.position);
-
-            // 2. 활성화
             hitEffect.SetActive(true);
 
-            // 3. 파티클 시스템 컴포넌트 가져와서 재생 (중요!)
             ParticleSystem ps = hitEffect.GetComponent<ParticleSystem>();
             if (ps != null)
             {
-                ps.Stop(); // 혹시 재생 중이라면 멈추고
-                ps.Play(); // 처음부터 다시 재생
+                ps.Stop();
+                ps.Play();
             }
         }
-
-        Debug.Log($"공격 적중: {other.gameObject.name}");
     }
 
 }

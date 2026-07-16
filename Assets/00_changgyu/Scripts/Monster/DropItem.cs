@@ -71,8 +71,8 @@ public class DropItem : MonoBehaviour
         {
 
             //**중요**이거 임시로 쓰는 템프플레이어 박아놓은거라 실적용시 고쳐야함
-            //플레이어 주체에 PlayerInventory를 고 getcomponent로 찾아온뒤 .inventory만 삭제하면 아마 될거임
-            bool isAdded = targetPlayer.GetComponent<TempPlayer>().inventory.GetItem(itemData);
+            //플레이어 주체에 PlayerInventory를 넣고 getcomponent로 찾아온뒤 .inventory만 삭제하면 아마 될거임
+            bool isAdded = targetPlayer.GetComponent<Move>().inventory.GetItem(itemData);
 
             if (isAdded)
             {

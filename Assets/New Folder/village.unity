@@ -4634,6 +4634,10 @@ PrefabInstance:
       propertyPath: minX
       value: -8.4
       objectReference: {fileID: 0}
+    - target: {fileID: 6970263699940479368, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
+      propertyPath: sword
+      value: 
+      objectReference: {fileID: 1969762196}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -42711,6 +42715,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1969762196 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5938250756717627094, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
+  m_PrefabInstance: {fileID: 221526956}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0b31a4f5ac6e5a4185fc85681103c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwordCollider
 --- !u!4 &1975436744 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030994623, guid: abc00000000010714811187110490657, type: 3}
