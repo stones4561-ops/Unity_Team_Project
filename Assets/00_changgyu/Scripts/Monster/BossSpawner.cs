@@ -12,7 +12,10 @@ public class BossSpawner : MonoBehaviour
     private GameObject boss;
     private bool reswpawning=false;
 
-
+    [SerializeField]
+    private float minX;
+    [SerializeField] 
+    private float maxX;
 
 
 
@@ -22,7 +25,11 @@ public class BossSpawner : MonoBehaviour
         GameObject mon = Instantiate(bossPF, transform.position, Quaternion.Euler(0, 90, 0), transform);
         mon.GetComponent<ChaseBase>()?.SetPlayer(player.transform);
         mon.GetComponent<MonsterBase>()?.SetPlayer(player.transform);
+        BearAI bear = mon.GetComponent<BearAI>();
+        bear.minX=this.minX;
+        bear.maxX=this.maxX;
         boss = mon;
+        
 
     }
 

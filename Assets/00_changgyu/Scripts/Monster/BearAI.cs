@@ -14,8 +14,8 @@ public class BearAI : ChaseBase
     [SerializeField] private float attackStompRange;
 
     [Header("이동제한")]
-    [SerializeField] private float minX;
-    [SerializeField] private float maxX;
+    public float minX;
+    public float maxX;
 
     // 🎯 1. 곰 공격 시작 조건 통제 (횡스크롤 좌우 판별)
     protected override bool CheckCustomAttackCondition()
