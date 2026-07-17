@@ -68,44 +68,51 @@ public class SlotUI : MonoBehaviour,IBeginDragHandler, IEndDragHandler,IDragHand
 
     public void OnDrop(PointerEventData eventData)
     {
-        if(eventData.pointerDrag==null) return; 
+        if (eventData.pointerDrag == null) return;
 
         SlotUI draggedSlotUI = eventData.pointerDrag.GetComponent<SlotUI>();
 
-        if(draggedSlotUI != null&&draggedSlotUI!=this&&draggedSlotUI.mySlot.IsItem)
+        if (draggedSlotUI != null && draggedSlotUI != this && draggedSlotUI.mySlot.IsItem)
         {
-            if(eventData.button == PointerEventData.InputButton.Left)
+            // 💡 좌클릭: 아이템 이동 및 병합
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
+                // 1. 내려놓은 곳에 이미 같은 아이템이 있을 경우 (병합 로직)
                 if (this.mySlot.IsItem && draggedSlotUI.MySlot.CurItemData == this.mySlot.CurItemData)
                 {
-                    if(draggedSlotUI.MySlot.CurItemMany+this.MySlot.CurItemMany <=draggedSlotUI.MySlot.CurItemData.max)
+                    // 💡 목적지 슬롯(this.MySlot)의 max 값을 기준으로 확인합니다.
+                    if (draggedSlotUI.MySlot.CurItemMany + this.MySlot.CurItemMany <= this.MySlot.CurItemData.max)
                     {
-                        draggedSlotUI.MySlot.ItemUp(draggedSlotUI.MySlot.CurItemMany);
-                        this.MySlot.ItemClear();
+                        // 목적지(this)에 드래그한 아이템 개수만큼 더해주고, 드래그한 슬롯은 비웁니다.
+                        this.MySlot.ItemUp(draggedSlotUI.MySlot.CurItemMany);
+                        draggedSlotUI.MySlot.ItemClear();
                     }
                     else
                     {
-                        int count= draggedSlotUI.MySlot.RemainToFull();
-                        draggedSlotUI.MySlot.ItemUp(count);
-                        this.MySlot.ItemDown(count);
+                        // 💡 목적지(this)의 남은 공간(RemainToFull)만큼만 가져옵니다.
+                        int count = this.MySlot.RemainToFull();
+                        this.MySlot.ItemUp(count);
+                        draggedSlotUI.MySlot.ItemDown(count);
                     }
+
+                    // 💡 중요: 병합이 끝났으므로 UI를 갱신하고 함수를 종료(return)하여 Swap이 실행되지 않게 막습니다!
+                    inventoryUI.Redraw();
+                    return;
                 }
 
-
+                // 2. 빈 슬롯이거나 서로 다른 아이템일 경우 (교환 로직)
+                // 위에서 return 되지 않은 경우에만 여기까지 내려와서 스왑을 실행합니다.
                 SwapSlotData(draggedSlotUI.mySlot, this.mySlot);
                 inventoryUI.Redraw();
             }
-            else if(eventData.button == PointerEventData.InputButton.Right && draggedSlotUI.mySlot.CurItemMany >= 2)
+            // 💡 우클릭: 아이템 나누기 (기존 코드 유지)
+            else if (eventData.button == PointerEventData.InputButton.Right && draggedSlotUI.mySlot.CurItemMany >= 2)
             {
-                if(!this.mySlot.IsItem)
+                if (!this.mySlot.IsItem)
                 {
                     inventoryUI.OpenSplitPopup(draggedSlotUI.MySlot, this.mySlot);
                 }
             }
-          
-
-
-
         }
     }
 
