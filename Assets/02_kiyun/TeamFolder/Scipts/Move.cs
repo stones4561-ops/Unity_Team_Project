@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class Move : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class Move : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
     private bool canJump = true;
+    private bool wasGrounded = true;
 
 
     private bool isAttacking = false;
@@ -47,6 +49,11 @@ public class Move : MonoBehaviour
     public float c_key_SkillCoolTime = 20f;
     public Image c_key_Skill_Image;
     public GameObject skillPF;
+
+    public Collider playerCollider;           // 캐릭터의 캡슐 콜라이더 연결
+    public PhysicsMaterial minFrictionMat;    // 아까 만든 마찰력 0 재질
+    public PhysicsMaterial maxFrictionMat;     // 방금 만든 마찰력 최대 재질
+
 
     private void Awake()
     {
@@ -73,16 +80,30 @@ public class Move : MonoBehaviour
 
         // 3. 레이캐스트 및 점프/공격 입력
         int groundLayer = LayerMask.GetMask("Ground");
-        isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
+        // 1. 현재 바닥 상태 체크
+        bool nowGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
+        Debug.DrawRay(transform.position + Vector3.up * 0.1f, Vector3.down * 0.4f, Color.red);
         if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
 
-        if ((Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded && canJump)
+        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
+
+            // 혹시라도 남아있을지 모르는 착지 트리거 초기화
+            anim.ResetTrigger("Land");
             anim.SetBool("Jump", true);
-            StartCoroutine(JumpCooldown());
+            anim.Play("Jump", 0, 0f);
         }
+        // 2. 상태가 변했는지 확인 (공중 -> 땅)
+        if (nowGrounded && !wasGrounded)
+        {
+            Debug.Log("착지 성공!");
+            anim.SetBool("Jump", false);
+            anim.SetTrigger("Land");
+        }
+        isGrounded = nowGrounded;
+        wasGrounded = nowGrounded;
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -109,7 +130,7 @@ public class Move : MonoBehaviour
             StartCoroutine(DashRoutine());
             StartCoroutine(DashCooldownRoutine());
         }
-        if (Input.GetKeyDown(KeyCode.C) && !c_key_Skill)
+        if (Input.GetKeyDown(KeyCode.C) && !c_key_Skill && isGrounded)
         {
             //Player.Instance.IsUsingSkill = true;
             c_key_Skill = true;
@@ -124,6 +145,20 @@ public class Move : MonoBehaviour
         {
             TurnInventory();
         }
+
+
+        if (horizontalInput != 0)
+        {
+            // 마찰력을 0으로 바꿔서 벽에 걸리지 않게 함
+            playerCollider.material = zeroFrictionMat;
+        }
+        // 2. 방향키에서 손을 뗐다면? (정지 상태)
+        else
+        {
+            // 마찰력을 최대로 높여서 경사면에서 미끄러지지 않게 브레이크를 걺
+            playerCollider.material = maxFrictionMat;
+        }
+
     }
     //걷기 삭제 후 달리기만 가능하도록 수정
     void HandleMovement()
@@ -263,7 +298,6 @@ public class Move : MonoBehaviour
     public void ResetCombo()
     {
         Debug.Log("콤보 리셋");
-        isAttacking = false;
         canCombo = false;
         nextInputReady = false;
     }
@@ -329,10 +363,19 @@ public class Move : MonoBehaviour
     //플레이어가 땅을 밟고 있는지 확인
     void OnCollisionEnter(Collision collision)
     {
-        // 태그 대신 레이어 확인 (더 안전함)
+        Debug.Log("레이어 이름: " + LayerMask.LayerToName(collision.gameObject.layer));
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            isGrounded = true;
+            if (!isGrounded) // 이미 땅에 있는데 또 호출되는 것을 방지
+            {
+                isGrounded = true;
+                Debug.Log("isGrounded : " + isGrounded);
+                // 점프 애니메이션 종료
+                anim.SetBool("Jump", false);
+
+                // 착지 애니메이션 실행 (애니메이터에 "Land" 트리거가 있다고 가정)
+                anim.SetTrigger("Land");
+            }
         }
     }
     #region 플레이어 피격 시 
@@ -352,12 +395,14 @@ public class Move : MonoBehaviour
     public void OnAttackAnimationFinished()
     {
         Debug.Log("애니메이션 끝! 공격 상태 초기화");
+        isAttacking = false;
         sword.DisableAttack();
     }
 
     public void OnAttackAimationStart()
     {
         Debug.Log("애니메이션 시작");
+        isAttacking = true;
         sword.OnAttack();
     }
 
