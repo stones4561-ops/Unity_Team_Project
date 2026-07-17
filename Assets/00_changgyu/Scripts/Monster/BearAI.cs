@@ -13,6 +13,10 @@ public class BearAI : ChaseBase
     [SerializeField] private float attackBiteRange;
     [SerializeField] private float attackStompRange;
 
+    [Header("이동제한")]
+    [SerializeField] private float minX;
+    [SerializeField] private float maxX;
+
     // 🎯 1. 곰 공격 시작 조건 통제 (횡스크롤 좌우 판별)
     protected override bool CheckCustomAttackCondition()
     {
@@ -26,6 +30,28 @@ public class BearAI : ChaseBase
         return isFacingRight == isPlayerOnRight;
     }
 
+    private void LateUpdate()
+    {
+        // 현재 좌표 가져오기
+        Vector3 currentPos = transform.position;
+
+        // X 좌표를 minX와 maxX 사이의 값으로 강제 고정(Clamp)
+        float clampedX = Mathf.Clamp(currentPos.x, minX, maxX);
+
+        // 만약 곰이 제한 구역을 벗어나려 했다면?
+        if (currentPos.x != clampedX)
+        {
+            // 고정된 X 좌표로 다시 위치를 덮어씌웁니다.
+            transform.position = new Vector3(clampedX, currentPos.y, currentPos.z);
+
+            // 투명 벽에 막혔으니 더 이상 밀고 나가지 않도록 속도도 0으로 만들어줍니다.
+            if (rb != null)
+            {
+                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+                ChooseNextAction();
+            }
+        }
+    }
     protected override IEnumerator AttackRoutine()
     {
         isAttacking = true;
@@ -157,74 +183,3 @@ public class BearAI : ChaseBase
 }
 
 
-//using System.Collections;
-//using UnityEngine;
-//using UnityEngine.EventSystems;
-
-//public class BearAI : ChaseBase
-//{
-//    [Header("애니메이션 시간")]
-//    [SerializeField] private float attackFootTime;
-//    [SerializeField] private float attackBiteTime;
-//    [SerializeField] private float attackStompTime;
-
-//    [Header("공격범위")]
-//    [SerializeField] private float attackBiteRange;
-//    [SerializeField] private float attackStompRange;
-
-
-//    protected override IEnumerator AttackRoutine()
-//    {
-//        isAttacking = true;
-
-//        rb.linearVelocity= new Vector3(0,rb.linearVelocity.y,0);
-//        anim.SetFloat("Speed", 0f);
-
-
-//        int randomAttack = Random.Range(0, 3);
-//        float currentWaitTime = 0f;
-
-//        switch(randomAttack)
-//        {
-//            case 0:
-//                anim.SetTrigger("attackFoot");
-//                currentWaitTime = attackFootTime;
-//                break;
-//            case 1:
-//                anim.SetTrigger("attackBite");
-//                currentWaitTime = attackBiteTime;
-//                break;
-//            case 2:
-//                anim.SetTrigger("attackStomp");
-//                currentWaitTime = attackStompTime;
-//                break;
-//        }
-//        yield return new WaitForSeconds(currentWaitTime);
-
-//        isAttacking=false;
-//    }
-
-//    public void FootDamage()
-//    {
-//        if (Vector3.Distance(transform.position, player.position) <= attackRange)
-//        {
-//            player.GetComponent<IDamageable>()?.TakeDamage(mBase.MonsterAtk);
-//        }
-//    }
-
-//    public void BiteDamage()
-//    {
-//        if (Vector3.Distance(transform.position, player.position) <= attackBiteRange)
-//        {
-//            player.GetComponent<IDamageable>()?.TakeDamage(mBase.MonsterAtk);
-//        }
-//    }
-
-//    public void StompDamage()
-//    {
-//        if (Vector3.Distance(transform.position, player.position) <= attackStompRange)
-//        {
-//            player.GetComponent<IDamageable>()?.TakeDamage(mBase.MonsterAtk);
-//        }
-//    }
-//}

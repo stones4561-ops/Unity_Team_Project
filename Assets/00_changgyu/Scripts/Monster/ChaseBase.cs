@@ -164,7 +164,7 @@ public abstract class ChaseBase : MonoBehaviour
         anim.SetFloat("Speed", moveDirection != 0 ? 1f : 0f);
     }
 
-    private void ChooseNextAction()
+    protected void ChooseNextAction()
     {
         int randomAction = Random.Range(0, 3);
         if (randomAction == 0)
