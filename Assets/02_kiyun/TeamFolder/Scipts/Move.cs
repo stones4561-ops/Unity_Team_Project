@@ -98,7 +98,6 @@ public class Move : MonoBehaviour
         // 2. 상태가 변했는지 확인 (공중 -> 땅)
         if (nowGrounded && !wasGrounded)
         {
-            Debug.Log("착지 성공!");
             anim.SetBool("Jump", false);
             anim.SetTrigger("Land");
         }
@@ -150,7 +149,7 @@ public class Move : MonoBehaviour
         if (horizontalInput != 0)
         {
             // 마찰력을 0으로 바꿔서 벽에 걸리지 않게 함
-            playerCollider.material = zeroFrictionMat;
+            playerCollider.material = minFrictionMat;
         }
         // 2. 방향키에서 손을 뗐다면? (정지 상태)
         else
@@ -363,13 +362,11 @@ public class Move : MonoBehaviour
     //플레이어가 땅을 밟고 있는지 확인
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("레이어 이름: " + LayerMask.LayerToName(collision.gameObject.layer));
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             if (!isGrounded) // 이미 땅에 있는데 또 호출되는 것을 방지
             {
                 isGrounded = true;
-                Debug.Log("isGrounded : " + isGrounded);
                 // 점프 애니메이션 종료
                 anim.SetBool("Jump", false);
 

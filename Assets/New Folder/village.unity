@@ -4572,7 +4572,7 @@ PrefabInstance:
     - target: {fileID: 6783839904799715284, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 8fbbe20b5f9876a48958152bbc868fbe, type: 2}
+      objectReference: {fileID: 9100000, guid: e2ac01988fad8184b8130a796be3596c, type: 2}
     - target: {fileID: 6970263699940479368, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
       propertyPath: maxX
       value: 32
@@ -4589,6 +4589,18 @@ PrefabInstance:
       propertyPath: skillPF
       value: 
       objectReference: {fileID: 2212038779750353832, guid: ec6ede47b37ae2a49a6340f7706bedc4, type: 3}
+    - target: {fileID: 6970263699940479368, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
+      propertyPath: maxFrictionMat
+      value: 
+      objectReference: {fileID: 13400000, guid: f519188050216df4bbea474c3e414c70, type: 2}
+    - target: {fileID: 6970263699940479368, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
+      propertyPath: minFrictionMat
+      value: 
+      objectReference: {fileID: 13400000, guid: f6b3a4d637118534e91c8adaebb92bbd, type: 2}
+    - target: {fileID: 6970263699940479368, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
+      propertyPath: playerCollider
+      value: 
+      objectReference: {fileID: 1392702395}
     - target: {fileID: 6970263699940479368, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
       propertyPath: dashSkill_Image
       value: 
@@ -32026,6 +32038,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c5955b1ca51d47245ae5e5e10395d910, type: 3}
   - {fileID: 8300000, guid: 80502e18f68bb734b9dded7bb8d2e750, type: 3}
   - {fileID: 8300000, guid: ce9a41258643d7a458646b4721cfae36, type: 3}
+--- !u!136 &1392702395 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 8530749760785534598, guid: 3bd4af907e9978441ae5389c791cffb2, type: 3}
+  m_PrefabInstance: {fileID: 221526956}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1394282006
 GameObject:
   m_ObjectHideFlags: 0
