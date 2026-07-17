@@ -17,6 +17,12 @@ public class BearAI : ChaseBase
     public float minX;
     public float maxX;
 
+    private void Start()
+    {
+        chaseRange = 12f;
+    }
+
+
     // 🎯 1. 곰 공격 시작 조건 통제 (횡스크롤 좌우 판별)
     protected override bool CheckCustomAttackCondition()
     {

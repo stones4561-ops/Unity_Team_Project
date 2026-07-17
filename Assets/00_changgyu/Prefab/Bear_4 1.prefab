@@ -2031,10 +2031,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1fddd3bc4bdda44dab872efbb94645c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterBase
-  myData: {fileID: 11400000, guid: 0945a8076f101874fa89990b12add4d2, type: 2}
+  myData: {fileID: 11400000, guid: 8bd379aa2a16d6e4d9f801fbb680c5b3, type: 2}
   anim: {fileID: 3734775969355451150}
   hpFillBar: {fileID: 6746113745443158667}
   dropTableSO: {fileID: 11400000, guid: 4593dbb393f004e4fbdecedc50b6cf5b, type: 2}
+  targetPlayer: {fileID: 0}
 --- !u!114 &-9175729920321381960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2060,6 +2061,8 @@ MonoBehaviour:
   attackStompTime: 3
   attackBiteRange: 3
   attackStompRange: 5
+  minX: 0
+  maxX: 0
 --- !u!1 &8002475675295336084
 GameObject:
   m_ObjectHideFlags: 0

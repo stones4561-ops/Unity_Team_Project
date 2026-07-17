@@ -5,7 +5,7 @@ public abstract class ChaseBase : MonoBehaviour
 {
     [Header("추적 및 공격 설정")] 
     public Transform player;
-    [SerializeField] private float chaseRange = 5f;
+    [SerializeField] protected float chaseRange = 5f;
     [SerializeField] protected float attackDetectedRange = 1.5f;
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] private float minActionTime = 1f;
