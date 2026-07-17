@@ -38,12 +38,13 @@ public class SwordCollider : MonoBehaviour
             // 몬스터 컴포넌트가 존재할 때만 죽음 여부 확인
             if (monster == null || !monster.IsDead)
             {
-                idamageable.TakeDamage(Player.Instance.GetAttackPower());
+                
 
                 // 2. 피격 이펙트 처리 (몬스터 정보가 확실할 때만)
                 if (monster != null && !monster.IsDead)
                 {
                     PlayHitEffect(other);
+                    idamageable.TakeDamage(Player.Instance.GetAttackPower());
                 }
             }
         }

@@ -27307,21 +27307,21 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: StartHitAimation
+    functionName: OnAttackAnimationFinished
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.033333335
+  - time: 0
     functionName: StopTrail
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.06666667
-    functionName: OnAttackAnimationFinished
+  - time: 0
+    functionName: StartHitAimation
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

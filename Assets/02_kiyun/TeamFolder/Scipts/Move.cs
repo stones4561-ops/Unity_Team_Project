@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class Move : MonoBehaviour
 {
@@ -75,7 +74,7 @@ public class Move : MonoBehaviour
         if (isDashing || Player.Instance.IsUsingSkill) return;
 
         // 2. 이동 로직 (Rigidbody 사용)
-        if (!isAttacking && !Player.Instance.Die)
+        if (!isAttacking && !Player.Instance.Die && !Player.Instance.IsInvincible)
             HandleMovement();
 
         // 3. 레이캐스트 및 점프/공격 입력

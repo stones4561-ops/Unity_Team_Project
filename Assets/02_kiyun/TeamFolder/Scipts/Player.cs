@@ -110,14 +110,14 @@ public class Player : MonoBehaviour,IDamageable
         {
             anim.SetTrigger("Hit");
             IsInvincible = true;
-            StartCoroutine(DamgeIsInvincible());
+            StartCoroutine(DamgeIsInvincible(1.5f));
         }
         else // 5% 미만일 때
         {
             cameraShake.Shake(0.1f, 0.2f);
             anim.SetTrigger("Hit2");
             IsInvincible = true;
-            StartCoroutine(DamgeIsInvincible());
+            StartCoroutine(DamgeIsInvincible(1f));
         }
         if (Hp <= 0)
         {
@@ -161,9 +161,9 @@ public class Player : MonoBehaviour,IDamageable
     {
         IsInvincible = value;
     }
-    IEnumerator DamgeIsInvincible()
+    IEnumerator DamgeIsInvincible(float time)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(time);
         IsInvincible = false;
     }
 
