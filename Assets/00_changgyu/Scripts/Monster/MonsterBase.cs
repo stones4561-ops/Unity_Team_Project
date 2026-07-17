@@ -72,6 +72,13 @@ public class MonsterBase : MonoBehaviour,IDamageable
         IsDead = false;
         IsHit = false;
         
+        if(anim!=null)
+        {
+            anim.ResetTrigger("isHit");
+            anim.ResetTrigger("isDead");
+            anim.Play("Idle", 0, 0f);
+        }
+
 
         dropBool.Clear();
         for(int i = 0; i < dropTableSO.dropChance.Length; i++)
@@ -112,6 +119,11 @@ public class MonsterBase : MonoBehaviour,IDamageable
     private IEnumerator Dead()
     {
         rb.linearVelocity = Vector3.zero;
+
+        if(anim!=null)
+        {
+            anim.ResetTrigger("isHit");
+        }
         anim.SetTrigger("isDead");
         yield return new WaitForSeconds(monsterDeathTime);
         for(int i=0;i<dropBool.Count;i++)
