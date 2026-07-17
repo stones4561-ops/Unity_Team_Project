@@ -42,7 +42,7 @@ public abstract class ChaseBase : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         moveSpeed = mBase.MonsterSpeed;
         ChooseNextAction();

@@ -17,8 +17,9 @@ public class BearAI : ChaseBase
     public float minX;
     public float maxX;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         chaseRange = 12f;
     }
 
