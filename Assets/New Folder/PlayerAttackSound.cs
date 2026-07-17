@@ -19,6 +19,7 @@ public class PlayerAttackSound : MonoBehaviour
     // 괄호 안에 (int index)를 추가했습니다! 애니메이션에서 숫자를 넘겨받을 겁니다.
     public void PlaySwingSound(int index)
     {
+        Debug.Log("칼소리");
         // 넘겨받은 숫자가 0~4 사이이고, 그 자리에 소리가 들어있을 때만 재생!
         if (swingSounds != null && index >= 0 && index < swingSounds.Length)
         {

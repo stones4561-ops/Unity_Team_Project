@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class Portal : MonoBehaviour
 {
-    public Transform destination;
-    public KeyCode interactKey = KeyCode.UpArrow;
+    public Transform[] destinations;
+    public KeyCode interactKey = KeyCode.Space;
     public float yOffset = 1.0f;
 
     private bool isPlayerNear = false;
     private GameObject player;
+    private int currentTargetIndex = 0;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,7 +16,7 @@ public class Portal : MonoBehaviour
         {
             isPlayerNear = true;
             player = other.gameObject;
-            Debug.Log("포탈 근처 도착! 설정된 키를 누르세요.");
+            Debug.Log("🟢 포탈 안으로 들어왔습니다!");
         }
     }
 
@@ -25,29 +26,53 @@ public class Portal : MonoBehaviour
         {
             isPlayerNear = false;
             player = null;
+            Debug.Log("🔴 포탈 밖으로 나갔습니다!");
         }
     }
 
     void Update()
     {
-        if (isPlayerNear && Input.GetKeyDown(interactKey))
+        // 스페이스바를 누르는 순간 작동하는 CCTV
+        if (Input.GetKeyDown(interactKey))
         {
-            // 🌟 1. 목적지의 X, Y 좌표만 가져오고, Z 좌표는 캐릭터의 원래 Z 좌표를 그대로 씁니다!
-            Vector3 newPosition = destination.position;
-            newPosition.z = player.transform.position.z; // Z축 고정 (추락 방지 핵심)
-            newPosition.y += yOffset;                    // Y축 위로 살짝 띄우기
+            if (!isPlayerNear)
+            {
+                Debug.Log("❌ 스페이스바를 눌렀지만, 캐릭터가 포탈 판정(Collider) 바깥에 있습니다!");
+                return;
+            }
 
-            // 2. 계산된 안전한 위치로 캐릭터 이동
+            if (destinations == null || destinations.Length == 0)
+            {
+                Debug.Log("❌ 목적지(Destinations)가 비어있습니다!");
+                return;
+            }
+
+            Transform target = destinations[currentTargetIndex];
+            if (target == null)
+            {
+                Debug.Log("❌ 연결된 목적지 오브젝트가 없습니다!");
+                return;
+            }
+
+            // 진짜 텔레포트 실행
+            Vector3 newPosition = target.position;
+            newPosition.z = player.transform.position.z;
+            newPosition.y += yOffset;
             player.transform.position = newPosition;
 
-            // 3. 가속도(관성) 초기화
             Rigidbody rb = player.GetComponent<Rigidbody>();
             if (rb != null)
             {
                 rb.linearVelocity = Vector3.zero;
             }
 
-            Debug.Log("안전한 순간이동 완료!");
+            Debug.Log($"🚀 텔레포트 성공! 새 위치: {newPosition}");
+
+            currentTargetIndex++;
+            if (currentTargetIndex >= destinations.Length)
+            {
+                currentTargetIndex = 0;
+            }
         }
     }
 }
