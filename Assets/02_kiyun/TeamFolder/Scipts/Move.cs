@@ -69,92 +69,95 @@ public class Move : MonoBehaviour
 
     void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        // 1. 대쉬 중엔 이동, 점프, 공격 로직을 아예 실행하지 않음
-        if (isDashing || Player.Instance.IsUsingSkill) return;
-
-        // 2. 이동 로직 (Rigidbody 사용)
-        if (!isAttacking && !Player.Instance.Die && !Player.Instance.IsInvincible)
-            HandleMovement();
-
-        // 3. 레이캐스트 및 점프/공격 입력
-        int groundLayer = LayerMask.GetMask("Ground");
-        // 1. 현재 바닥 상태 체크
-        bool nowGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
-        Debug.DrawRay(transform.position + Vector3.up * 0.1f, Vector3.down * 0.4f, Color.red);
-        if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+        if (!Player.Instance.Die)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            horizontalInput = Input.GetAxis("Horizontal");
+            // 1. 대쉬 중엔 이동, 점프, 공격 로직을 아예 실행하지 않음
+            if (isDashing || Player.Instance.IsUsingSkill) return;
 
-            // 혹시라도 남아있을지 모르는 착지 트리거 초기화
-            anim.ResetTrigger("Land");
-            anim.SetBool("Jump", true);
-            anim.Play("Jump", 0, 0f);
-        }
-        // 2. 상태가 변했는지 확인 (공중 -> 땅)
-        if (nowGrounded && !wasGrounded)
-        {
-            anim.SetBool("Jump", false);
-            anim.SetTrigger("Land");
-        }
-        isGrounded = nowGrounded;
-        wasGrounded = nowGrounded;
+            // 2. 이동 로직 (Rigidbody 사용)
+            if (!isAttacking && !Player.Instance.Die && !Player.Instance.IsInvincible)
+                HandleMovement();
 
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            if (isGrounded && !isAttacking)
+            // 3. 레이캐스트 및 점프/공격 입력
+            int groundLayer = LayerMask.GetMask("Ground");
+            // 1. 현재 바닥 상태 체크
+            bool nowGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.15f, groundLayer);
+            Debug.DrawRay(transform.position + Vector3.up * 0.1f, Vector3.down * 0.4f, Color.red);
+            if (isGrounded) { anim.SetBool("Jump", false); anim.SetBool("Down Attack", false); }
+
+            if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded && !Player.Instance.IsInvincible)
             {
-                StartCoroutine(AttackRoutine());
-                anim.SetTrigger("Attack");
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                isGrounded = false;
+
+                // 혹시라도 남아있을지 모르는 착지 트리거 초기화
+                anim.ResetTrigger("Land");
+                anim.SetBool("Jump", true);
+                anim.Play("Jump", 0, 0f);
             }
-            else if (canCombo)
+            // 2. 상태가 변했는지 확인 (공중 -> 땅)
+            if (nowGrounded && !wasGrounded)
             {
-                canCombo = false;
-                nextInputReady = true;
-                anim.SetTrigger("Attack");
+                anim.SetBool("Jump", false);
+                anim.SetTrigger("Land");
             }
-            if (!isGrounded)
+            isGrounded = nowGrounded;
+            wasGrounded = nowGrounded;
+
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                anim.SetBool("Down Attack", true);
+                if (isGrounded && !isAttacking)
+                {
+                    StartCoroutine(AttackRoutine());
+                    anim.SetTrigger("Attack");
+                }
+                else if (canCombo)
+                {
+                    canCombo = false;
+                    nextInputReady = true;
+                    anim.SetTrigger("Attack");
+                }
+                if (!isGrounded)
+                {
+                    anim.SetBool("Down Attack", true);
+                }
+
             }
-                
-        }
 
-        if (Input.GetKeyDown(KeyCode.X) && !isDashing && canDash)
-        {
-            StartCoroutine(DashRoutine());
-            StartCoroutine(DashCooldownRoutine());
-        }
-        if (Input.GetKeyDown(KeyCode.C) && !c_key_Skill && isGrounded)
-        {
-            //Player.Instance.IsUsingSkill = true;
-            c_key_Skill = true;
-            SpawnSkillTr();
-            //StartCoroutine(SpecialAttackRoutine(4.4f));
-            StartCoroutine(CooldownRoutine(c_key_SkillCoolTime));
+            if (Input.GetKeyDown(KeyCode.X) && !isDashing && canDash)
+            {
+                StartCoroutine(DashRoutine());
+                StartCoroutine(DashCooldownRoutine());
+            }
+            if (Input.GetKeyDown(KeyCode.C) && !c_key_Skill && isGrounded)
+            {
+                //Player.Instance.IsUsingSkill = true;
+                c_key_Skill = true;
+                SpawnSkillTr();
+                //StartCoroutine(SpecialAttackRoutine(4.4f));
+                StartCoroutine(CooldownRoutine(c_key_SkillCoolTime));
 
-            //anim.SetTrigger("P");
-        }
+                //anim.SetTrigger("P");
+            }
 
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            TurnInventory();
-        }
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                TurnInventory();
+            }
 
 
-        if (horizontalInput != 0)
-        {
-            // 마찰력을 0으로 바꿔서 벽에 걸리지 않게 함
-            playerCollider.material = minFrictionMat;
-        }
-        // 2. 방향키에서 손을 뗐다면? (정지 상태)
-        else
-        {
-            // 마찰력을 최대로 높여서 경사면에서 미끄러지지 않게 브레이크를 걺
-            playerCollider.material = maxFrictionMat;
+            if (horizontalInput != 0)
+            {
+                // 마찰력을 0으로 바꿔서 벽에 걸리지 않게 함
+                playerCollider.material = minFrictionMat;
+            }
+            // 2. 방향키에서 손을 뗐다면? (정지 상태)
+            else
+            {
+                // 마찰력을 최대로 높여서 경사면에서 미끄러지지 않게 브레이크를 걺
+                playerCollider.material = maxFrictionMat;
+            }
         }
 
     }
